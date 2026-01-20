@@ -3,86 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVG Icon Generator</title>
+    <title>SVG Multi-Char Generator</title>
     <style>
         body { font-family: sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .app-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: flex; gap: 40px; max-width: 900px; width: 100%; flex-wrap: wrap; }
+        .app-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: flex; gap: 40px; max-width: 1000px; width: 100%; flex-wrap: wrap; }
         
-        /* ① プレビュー画面 */
-        .preview-section { flex: 1; min-width: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #ddd; border-radius: 10px; padding: 20px; background: #fafafa; }
-        #svgContainer svg { width: 100%; height: auto; max-width: 300px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1)); }
+        /* プレビュー画面 */
+        .preview-section { flex: 1.2; min-width: 350px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #ddd; border-radius: 10px; padding: 20px; background: #fafafa; }
+        #svgContainer svg { width: 100%; height: auto; max-width: 400px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1)); }
 
         /* 操作パネル */
         .controls { flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 15px; }
-        .control-group { display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 0.9rem; font-weight: bold; color: #444; }
-        input { padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        label { font-size: 0.85rem; font-weight: bold; color: #444; display: flex; justify-content: space-between; }
+        .val-disp { color: #007bff; }
+        input[type="text"], select { padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
+        input[type="range"] { cursor: pointer; }
 
-        /* ボタンのデザイン */
+        /* ボタン */
         .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
         button { padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        
-        /* ② コピーボタン */
         .copy-btn { background-color: #28a745; color: white; }
-        .copy-btn:hover { background-color: #218838; }
-        
-        /* ③ ダウンロードボタン */
         .download-btn { background-color: #007bff; color: white; }
-        .download-btn:hover { background-color: #0069d9; }
-
-        .toast { font-size: 0.8rem; color: #28a745; text-align: center; height: 1.2em; margin-top: 5px; }
+        .toast { font-size: 0.8rem; color: #28a745; text-align: center; height: 1.2em; }
     </style>
 </head>
 <body>
 
-    <h1>SVGアイコン作成ツール</h1>
+    <h1>SVGアイコン作成ツール (2-4文字対応)</h1>
 
     <div class="app-container">
         <div class="preview-section">
             <div id="svgContainer"></div>
-            <p style="color: #888; font-size: 0.8rem; margin-top: 10px;">プレビュー画面</p>
+            <p style="color: #888; font-size: 0.8rem; margin-top: 10px;">プレビュー</p>
         </div>
 
         <div class="controls">
             <div class="control-group">
-                <label>右下の文字:</label>
-                <input type="text" id="text1" value="語" maxlength="1">
+                <label>文字数モード</label>
+                <select id="charMode">
+                    <option value="2" selected>2文字 (対角)</option>
+                    <option value="3">3文字 (三角形)</option>
+                    <option value="4">4文字 (グリッド)</option>
+                </select>
             </div>
-            <div class="control-group">
-                <label>左上の文字:</label>
-                <input type="text" id="text2" value="仏" maxlength="1">
+
+            <div class="control-group" id="inputArea">
+                <label>文字入力</label>
+                <input type="text" id="textInput" value="仏語" maxlength="4" placeholder="文字を入力">
             </div>
+
             <div class="control-group">
-                <label>文字の色:</label>
+                <label>文字サイズ <span class="val-disp" id="val-size">55</span></label>
+                <input type="range" id="fontSize" min="20" max="80" value="55">
+            </div>
+
+            <div class="control-group">
+                <label>文字の間隔（広がり） <span class="val-disp" id="val-spacing">0</span></label>
+                <input type="range" id="spacing" min="-20" max="40" value="0">
+            </div>
+
+            <div class="control-group">
+                <label>文字の色</label>
                 <input type="color" id="textColor" value="#333333">
-            </div>
-            <div class="control-group">
-                <label>背景色:</label>
+                <label style="margin-top:5px;">背景色</label>
                 <input type="color" id="bgColor" value="#c3d1d5">
-            </div>
-            <div class="control-group">
-                <label>枠の明るい色:</label>
-                <input type="color" id="hlColor" value="#eef4f6">
             </div>
 
             <div class="btn-group">
-                <button class="copy-btn" onclick="copyToClipboard()">コードをコピーする</button>
-                <button class="download-btn" onclick="downloadSVG()">SVGファイルを保存する</button>
+                <button class="copy-btn" onclick="copyToClipboard()">コードをコピー</button>
+                <button class="download-btn" onclick="downloadSVG()">SVGを保存</button>
                 <div id="toast" class="toast"></div>
             </div>
         </div>
     </div>
 
     <script>
-        const ids = ['text1', 'text2', 'textColor', 'bgColor', 'hlColor'];
+        const inputs = ['charMode', 'textInput', 'fontSize', 'spacing', 'textColor', 'bgColor'];
 
-        // SVGコードを生成する関数
         function getSVGCode() {
-            const t1 = document.getElementById('text1').value;
-            const t2 = document.getElementById('text2').value;
+            const mode = document.getElementById('charMode').value;
+            const text = document.getElementById('textInput').value;
+            const size = document.getElementById('fontSize').value;
+            const spacing = parseInt(document.getElementById('spacing').value);
             const tc = document.getElementById('textColor').value;
             const bc = document.getElementById('bgColor').value;
-            const hc = document.getElementById('hlColor').value;
+
+            // スライダーの値表示更新
+            document.getElementById('val-size').innerText = size;
+            document.getElementById('val-spacing').innerText = spacing;
+
+            let textElements = '';
+            const chars = text.split('');
+
+            // 文字数に応じた配置ロジック
+            const coords = {
+                "2": [
+                    {x: 14 - spacing, y: 64 - spacing}, // 左上
+                    {x: 55 + spacing, y: 103 + spacing} // 右下
+                ],
+                "3": [
+                    {x: 35, y: 55 - spacing},           // 中央上
+                    {x: 10 - spacing, y: 103 + spacing}, // 左下
+                    {x: 60 + spacing, y: 103 + spacing}  // 右下
+                ],
+                "4": [
+                    {x: 10 - spacing, y: 55 - spacing},  // 左上
+                    {x: 60 + spacing, y: 55 - spacing},  // 右上
+                    {x: 10 - spacing, y: 103 + spacing}, // 左下
+                    {x: 60 + spacing, y: 103 + spacing}  // 右下
+                ]
+            };
+
+            const currentCoords = coords[mode] || coords["2"];
+            
+            for(let i=0; i < mode; i++) {
+                const char = chars[i] || "？";
+                const pos = currentCoords[i];
+                textElements += `<text x="${pos.x}" y="${pos.y}" style="fill: ${tc}; font-family: sans-serif; font-size: ${size}px; font-weight: bold; filter: url(#yShadow);">${char}</text>`;
+            }
 
             return `<svg width="800" height="800" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -99,49 +138,53 @@
     </filter>
   </defs>
   <path d="M116 4H12c-4.4 0-8 3.6-8 8v104c0 4.4 3.6 8 8 8h104c4.4 0 8-3.6 8-8V12c0-4.4-3.6-8-8-8z" fill="${bc}"/>
-  <path d="M 121.7 6.3 C 120.2 4.9 118.2 4 116 4 L 12 4 C 7.6 4 4 7.6 4 12 L 4 116 C 4 118.2 4.9 120.2 6.3 121.7 L 12.6 111 L 108.4 111 C 115.3 111 115 108.6 115 93.2 L 115 10.7 L 121.7 6.3 Z" fill="${hc}"/>
-  <path d="M 34.737 9.922 C 34.737 7.622 33.137 6.922 23.937 7.222 C 16.237 7.522 12.437 8.422 10.137 11.222 C 7.837 14.022 7.237 19.722 7.137 26.522 C 7.137 31.322 7.137 35.822 9.637 35.822 C 13.037 35.822 13.037 27.922 15.837 23.522 C 21.237 14.822 34.737 12.922 34.737 9.922 Z" opacity=".5" fill="${bc}"/>
-  <text x="55" y="103" style="fill: ${tc}; font-family: sans-serif; font-size: 55px; font-weight: bold; filter: url(#yShadow);">${t1}</text>
-  <text x="14" y="64" style="fill: ${tc}; font-family: sans-serif; font-size: 55px; font-weight: bold; filter: url(#yShadow);">${t2}</text>
+  <path d="M 121.7 6.3 C 120.2 4.9 118.2 4 116 4 L 12 4 C 7.6 4 4 7.6 4 12 L 4 116 C 4 118.2 4.9 120.2 6.3 121.7 L 12.6 111 L 108.4 111 C 115.3 111 115 108.6 115 93.2 L 115 10.7 L 121.7 6.3 Z" fill="white" fill-opacity="0.2"/>
+  ${textElements}
 </svg>`;
         }
 
-        // プレビュー更新
-        function update() {
-            document.getElementById('svgContainer').innerHTML = getSVGCode();
-        }
+        function update() { document.getElementById('svgContainer').innerHTML = getSVGCode(); }
 
-        // ② コピー機能
-        async function copyToClipboard() {
-            try {
-                await navigator.clipboard.writeText(getSVGCode());
-                showToast("コピーしました！メモ帳に貼れます。");
-            } catch (err) {
-                showToast("コピーに失敗しました。");
+        // 初期設定リセット（モード変更時）
+        document.getElementById('charMode').addEventListener('change', () => {
+            const mode = document.getElementById('charMode').value;
+            if(mode === "4") {
+                document.getElementById('textInput').value = "機械修理";
+                document.getElementById('fontSize').value = 40;
+                document.getElementById('spacing').value = 5;
+            } else if(mode === "3") {
+                document.getElementById('textInput').value = "新発売";
+                document.getElementById('fontSize').value = 45;
+                document.getElementById('spacing').value = 5;
+            } else {
+                document.getElementById('textInput').value = "仏語";
+                document.getElementById('fontSize').value = 55;
+                document.getElementById('spacing').value = 0;
             }
+            update();
+        });
+
+        async function copyToClipboard() {
+            await navigator.clipboard.writeText(getSVGCode());
+            showToast("コピーしました！");
         }
 
-        // ③ ダウンロード機能
         function downloadSVG() {
             const blob = new Blob([getSVGCode()], {type: 'image/svg+xml'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
-            a.download = "my-icon.svg";
-            document.body.appendChild(a);
-            a.click();
+            a.href = url; a.download = "icon.svg";
+            document.body.appendChild(a); a.click();
             document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showToast("ファイルを保存しました！");
+            showToast("保存しました！");
         }
 
         function showToast(msg) {
             const t = document.getElementById('toast');
-            t.innerText = msg;
-            setTimeout(() => t.innerText = "", 3000);
+            t.innerText = msg; setTimeout(() => t.innerText = "", 2000);
         }
 
-        ids.forEach(id => document.getElementById(id).addEventListener('input', update));
+        inputs.forEach(id => document.getElementById(id).addEventListener('input', update));
         update();
     </script>
 </body>
