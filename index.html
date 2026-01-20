@@ -3,118 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVG Customizer</title>
+    <title>SVG Icon Generator</title>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; background: #f0f2f5; }
-        .container { display: flex; gap: 40px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .controls { display: flex; flex-direction: column; gap: 15px; width: 300px; }
+        body { font-family: sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .app-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: flex; gap: 40px; max-width: 900px; width: 100%; flex-wrap: wrap; }
+        
+        /* ① プレビュー画面 */
+        .preview-section { flex: 1; min-width: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #ddd; border-radius: 10px; padding: 20px; background: #fafafa; }
+        #svgContainer svg { width: 100%; height: auto; max-width: 300px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1)); }
+
+        /* 操作パネル */
+        .controls { flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 15px; }
         .control-group { display: flex; flex-direction: column; gap: 5px; }
-        .preview { background: #eee; padding: 10px; border-radius: 8px; }
-        svg { width: 400px; height: 400px; border: 1px solid #ddd; }
-        button { margin-top: 20px; padding: 10px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
-        button:hover { background: #0056b3; }
+        label { font-size: 0.9rem; font-weight: bold; color: #444; }
+        input { padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
+
+        /* ボタンのデザイン */
+        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        button { padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        
+        /* ② コピーボタン */
+        .copy-btn { background-color: #28a745; color: white; }
+        .copy-btn:hover { background-color: #218838; }
+        
+        /* ③ ダウンロードボタン */
+        .download-btn { background-color: #007bff; color: white; }
+        .download-btn:hover { background-color: #0069d9; }
+
+        .toast { font-size: 0.8rem; color: #28a745; text-align: center; height: 1.2em; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-    <h1>SVG Customizer</h1>
+    <h1>SVGアイコン作成ツール</h1>
 
-    <div class="container">
-        <div class="preview" id="svgContainer">
-            </div>
+    <div class="app-container">
+        <div class="preview-section">
+            <div id="svgContainer"></div>
+            <p style="color: #888; font-size: 0.8rem; margin-top: 10px;">プレビュー画面</p>
+        </div>
 
         <div class="controls">
-            <h3>① 文字の変更</h3>
             <div class="control-group">
-                <label>文字1 (下):</label>
-                <input type="text" id="text1" value="語" maxlength="2">
+                <label>右下の文字:</label>
+                <input type="text" id="text1" value="語" maxlength="1">
             </div>
             <div class="control-group">
-                <label>文字2 (上):</label>
-                <input type="text" id="text2" value="仏" maxlength="2">
+                <label>左上の文字:</label>
+                <input type="text" id="text2" value="仏" maxlength="1">
             </div>
-
-            <h3>② 文字の色の変更</h3>
             <div class="control-group">
                 <label>文字の色:</label>
                 <input type="color" id="textColor" value="#333333">
             </div>
-
-            <h3>③ 背景色の変更</h3>
             <div class="control-group">
-                <label>メイン背景色:</label>
+                <label>背景色:</label>
                 <input type="color" id="bgColor" value="#c3d1d5">
             </div>
             <div class="control-group">
-                <label>ハイライト部分:</label>
-                <input type="color" id="highlightColor" value="#eef4f6">
+                <label>枠の明るい色:</label>
+                <input type="color" id="hlColor" value="#eef4f6">
             </div>
 
-            <button onclick="downloadSVG()">SVGとして保存</button>
+            <div class="btn-group">
+                <button class="copy-btn" onclick="copyToClipboard()">コードをコピーする</button>
+                <button class="download-btn" onclick="downloadSVG()">SVGファイルを保存する</button>
+                <div id="toast" class="toast"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        const inputs = ['text1', 'text2', 'textColor', 'bgColor', 'highlightColor'];
-        
-        function updateSVG() {
+        const ids = ['text1', 'text2', 'textColor', 'bgColor', 'hlColor'];
+
+        // SVGコードを生成する関数
+        function getSVGCode() {
             const t1 = document.getElementById('text1').value;
             const t2 = document.getElementById('text2').value;
-            const tColor = document.getElementById('textColor').value;
-            const bColor = document.getElementById('bgColor').value;
-            const hColor = document.getElementById('highlightColor').value;
+            const tc = document.getElementById('textColor').value;
+            const bc = document.getElementById('bgColor').value;
+            const hc = document.getElementById('hlColor').value;
 
-            const svgContent = `
-<svg width="800" height="800" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+            return `<svg width="800" height="800" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <filter id="yellowShadow" x="-50%" y="-50%" width="200%" height="200%">
-      <feOffset dx="1.5" dy="1.5" in="SourceAlpha" result="offset1"/>
-      <feGaussianBlur in="offset1" stdDeviation="0.5" result="blur1"/>
-      <feFlood flood-color="white" flood-opacity="0.4" result="flood1"/>
-      <feComposite in="flood1" in2="blur1" operator="in" result="highlight"/>
-      <feOffset dx="-1.5" dy="-1.5" in="SourceAlpha" result="offset2"/>
-      <feGaussianBlur in="offset2" stdDeviation="0.5" result="blur2"/>
-      <feFlood flood-color="black" flood-opacity="0.6" result="flood2"/>
-      <feComposite in="flood2" in2="blur2" operator="in" result="shadow"/>
-      <feMerge>
-        <feMergeNode in="highlight"/>
-        <feMergeNode in="shadow"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
+    <filter id="yShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feOffset dx="1.5" dy="1.5" in="SourceAlpha" result="o1"/>
+      <feGaussianBlur in="o1" stdDeviation="0.5" result="b1"/>
+      <feFlood flood-color="white" flood-opacity="0.4" result="f1"/>
+      <feComposite in="f1" in2="b1" operator="in" result="hi"/>
+      <feOffset dx="-1.5" dy="-1.5" in="SourceAlpha" result="o2"/>
+      <feGaussianBlur in="o2" stdDeviation="0.5" result="b2"/>
+      <feFlood flood-color="black" flood-opacity="0.6" result="f2"/>
+      <feComposite in="f2" in2="b2" operator="in" result="sh"/>
+      <feMerge><feMergeNode in="hi"/><feMergeNode in="sh"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
-  <g>
-    <path d="M116 4H12c-4.4 0-8 3.6-8 8v104c0 4.4 3.6 8 8 8h104c4.4 0 8-3.6 8-8V12c0-4.4-3.6-8-8-8z" fill="${bColor}"/>
-    <path d="M 121.7 6.3 C 120.2 4.9 118.2 4 116 4 L 12 4 C 7.6 4 4 7.6 4 12 L 4 116 C 4 118.2 4.9 120.2 6.3 121.7 L 12.6 111 L 108.4 111 C 115.3 111 115 108.6 115 93.2 L 115 10.7 L 121.7 6.3 Z" fill="${hColor}"/>
-    <path d="M 34.737 9.922 C 34.737 7.622 33.137 6.922 23.937 7.222 C 16.237 7.522 12.437 8.422 10.137 11.222 C 7.837 14.022 7.237 19.722 7.137 26.522 C 7.137 31.322 7.137 35.822 9.637 35.822 C 13.037 35.822 13.037 27.922 15.837 23.522 C 21.237 14.822 34.737 12.922 34.737 9.922 L 34.737 9.922 Z" opacity=".5" fill="${bColor}"/>
-  </g>
-  <text x="55" y="103.292" style="fill: ${tColor}; font-family: Arial, sans-serif; font-size: 55px; font-weight: bold; filter: url(#yellowShadow);">${t1}</text>
-  <text x="13.699" y="64.207" style="fill: ${tColor}; font-family: Arial, sans-serif; font-size: 55px; font-weight: bold; filter: url(#yellowShadow);">${t2}</text>
+  <path d="M116 4H12c-4.4 0-8 3.6-8 8v104c0 4.4 3.6 8 8 8h104c4.4 0 8-3.6 8-8V12c0-4.4-3.6-8-8-8z" fill="${bc}"/>
+  <path d="M 121.7 6.3 C 120.2 4.9 118.2 4 116 4 L 12 4 C 7.6 4 4 7.6 4 12 L 4 116 C 4 118.2 4.9 120.2 6.3 121.7 L 12.6 111 L 108.4 111 C 115.3 111 115 108.6 115 93.2 L 115 10.7 L 121.7 6.3 Z" fill="${hc}"/>
+  <path d="M 34.737 9.922 C 34.737 7.622 33.137 6.922 23.937 7.222 C 16.237 7.522 12.437 8.422 10.137 11.222 C 7.837 14.022 7.237 19.722 7.137 26.522 C 7.137 31.322 7.137 35.822 9.637 35.822 C 13.037 35.822 13.037 27.922 15.837 23.522 C 21.237 14.822 34.737 12.922 34.737 9.922 Z" opacity=".5" fill="${bc}"/>
+  <text x="55" y="103" style="fill: ${tc}; font-family: sans-serif; font-size: 55px; font-weight: bold; filter: url(#yShadow);">${t1}</text>
+  <text x="14" y="64" style="fill: ${tc}; font-family: sans-serif; font-size: 55px; font-weight: bold; filter: url(#yShadow);">${t2}</text>
 </svg>`;
-            
-            document.getElementById('svgContainer').innerHTML = svgContent;
         }
 
-        // 入力が変わるたびに更新
-        inputs.forEach(id => {
-            document.getElementById(id).addEventListener('input', updateSVG);
-        });
+        // プレビュー更新
+        function update() {
+            document.getElementById('svgContainer').innerHTML = getSVGCode();
+        }
 
-        // SVGのダウンロード機能
+        // ② コピー機能
+        async function copyToClipboard() {
+            try {
+                await navigator.clipboard.writeText(getSVGCode());
+                showToast("コピーしました！メモ帳に貼れます。");
+            } catch (err) {
+                showToast("コピーに失敗しました。");
+            }
+        }
+
+        // ③ ダウンロード機能
         function downloadSVG() {
-            const svgData = document.getElementById('svgContainer').innerHTML;
-            const blob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+            const blob = new Blob([getSVGCode()], {type: 'image/svg+xml'});
             const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'custom.svg';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "my-icon.svg";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("ファイルを保存しました！");
         }
 
-        // 初期表示
-        updateSVG();
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            setTimeout(() => t.innerText = "", 3000);
+        }
+
+        ids.forEach(id => document.getElementById(id).addEventListener('input', update));
+        update();
     </script>
 </body>
 </html>
