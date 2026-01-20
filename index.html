@@ -3,21 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVG Custom Icon Ultimate</title>
+    <title>SVG Custom Icon Master</title>
     <style>
         body { font-family: sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
-        .app-container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: flex; gap: 30px; max-width: 1200px; width: 95%; flex-wrap: wrap; }
+        .app-container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: flex; gap: 30px; max-width: 1250px; width: 95%; flex-wrap: wrap; }
         
-        /* プレビューエリア（固定表示） */
         .preview-section { flex: 1; min-width: 350px; display: flex; flex-direction: column; align-items: center; border: 2px dashed #ddd; border-radius: 10px; padding: 20px; background: #fafafa; position: sticky; top: 20px; height: fit-content; }
         #svgContainer svg { width: 100%; height: auto; max-width: 380px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1)); }
 
-        /* 設定エリア */
         .controls { flex: 1.5; min-width: 400px; display: flex; flex-direction: column; gap: 20px; }
         .control-block { border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px; background: #fff; }
         h3 { margin: 0 0 15px 0; font-size: 1rem; color: #333; border-left: 5px solid #007bff; padding-left: 10px; }
         
-        /* 各文字の設定カード */
         .char-card { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 15px; margin-bottom: 10px; }
         .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
         .grid-settings { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -26,13 +23,12 @@
         input[type="range"] { width: 100%; }
         input[type="text"], select { padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
         
-        /* カラー設定 */
-        .color-row { display: flex; align-items: center; gap: 8px; }
-        input[type="color"] { width: 30px; height: 30px; border: none; padding: 0; cursor: pointer; }
-        .hex-input { width: 80px; font-family: monospace; font-size: 0.8rem; }
+        .color-row { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+        input[type="color"] { width: 25px; height: 25px; border: none; padding: 0; cursor: pointer; }
+        .hex-input { width: 70px; font-family: monospace; font-size: 0.75rem; padding: 4px !important; }
 
         .btn-group { display: flex; gap: 10px; margin-top: 10px; }
-        button { flex: 1; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button { flex: 1; padding: 10px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.8rem; }
         .copy-btn { background-color: #28a745; color: white; }
         .download-btn { background-color: #007bff; color: white; }
         .toast { font-size: 0.85rem; color: #28a745; text-align: center; height: 1.2em; margin-bottom: 10px; font-weight: bold; }
@@ -40,7 +36,7 @@
 </head>
 <body>
 
-    <h1 style="color: #333;">SVGアイコン Ultimate 調整ツール</h1>
+    <h1>SVGアイコン 調整ツール</h1>
     <div id="toast" class="toast"></div>
 
     <div class="app-container">
@@ -54,22 +50,15 @@
 
         <div class="controls">
             <div class="control-block">
-                <h3>1. 全体設定</h3>
+                <h3>1. 全体設定 & 調整</h3>
                 <div class="grid-settings">
                     <div class="input-item">
                         <label>文字数モード</label>
                         <select id="charMode">
-                            <option value="2">2文字 (斜め)</option>
-                            <option value="3">3文字 (三角形)</option>
-                            <option value="4">4文字 (グリッド)</option>
+                            <option value="2">2文字</option>
+                            <option value="3">3文字</option>
+                            <option value="4">4文字</option>
                         </select>
-                    </div>
-                    <div class="input-item">
-                        <label>デフォルト文字色 (一括適用用)</label>
-                        <div class="color-row">
-                            <input type="color" id="globalTextColorPicker" value="#333333">
-                            <button onclick="applyGlobalColor()" style="padding: 4px; font-size: 0.7rem;">全文字に適用</button>
-                        </div>
                     </div>
                     <div class="input-item">
                         <label>背景色</label>
@@ -78,13 +67,24 @@
                             <input type="text" id="bgColorHex" value="#c3d1d5" class="hex-input">
                         </div>
                     </div>
+                    <div class="input-item">
+                        <label>一括適用 (文字色 / 影色)</label>
+                        <div class="color-row">
+                            <input type="color" id="globalTextColorPicker" value="#333333">
+                            <input type="color" id="globalShadowColorPicker" value="#000000">
+                            <button onclick="applyGlobalColors()" style="background:#666; color:#fff;">全適用</button>
+                        </div>
+                    </div>
+                    <div class="input-item">
+                        <label>全体広がり調整: <span id="globalSpacingVal">0</span></label>
+                        <input type="range" id="globalSpacing" min="-30" max="50" value="0" oninput="updateAllOffsets()">
+                    </div>
                 </div>
             </div>
 
             <div class="control-block">
-                <h3>2. 各文字の個別調整 (位置・サイズ・色)</h3>
-                <div id="charCardsContainer">
-                    </div>
+                <h3>2. 各文字の詳細設定</h3>
+                <div id="charCardsContainer"></div>
             </div>
         </div>
     </div>
@@ -95,22 +95,24 @@
         const bgColorPicker = document.getElementById('bgColorPicker');
         const bgColorHex = document.getElementById('bgColorHex');
         const globalTextColorPicker = document.getElementById('globalTextColorPicker');
+        const globalShadowColorPicker = document.getElementById('globalShadowColorPicker');
+        const globalSpacing = document.getElementById('globalSpacing');
 
         const defaultChars = ["仏", "語", "機", "械"];
-        
-        // 文字ごとの設定を保持する配列
         let charSettings = [];
 
         function initSettings() {
             const mode = parseInt(charMode.value);
             charSettings = [];
+            const baseSp = parseInt(globalSpacing.value);
             for (let i = 0; i < mode; i++) {
                 charSettings.push({
                     text: defaultChars[i],
                     size: mode == 4 ? 40 : 55,
                     offsetX: 0,
                     offsetY: 0,
-                    color: globalTextColorPicker.value
+                    color: globalTextColorPicker.value,
+                    shadowColor: globalShadowColorPicker.value
                 });
             }
             renderCards();
@@ -125,14 +127,11 @@
                     <div class="card-header">${i + 1}文字目</div>
                     <div class="grid-settings">
                         <div class="input-item">
-                            <label>文字内容</label>
-                            <input type="text" value="${set.text}" maxlength="1" oninput="updateChar(${i}, 'text', this.value)">
-                        </div>
-                        <div class="input-item">
-                            <label>個別色</label>
+                            <label>文字 / 個別色 / 影色</label>
                             <div class="color-row">
-                                <input type="color" value="${set.color}" oninput="updateChar(${i}, 'color', this.value)">
-                                <input type="text" value="${set.color}" class="hex-input" oninput="updateChar(${i}, 'color', this.value)">
+                                <input type="text" value="${set.text}" maxlength="1" oninput="updateChar(${i}, 'text', this.value)" style="width:30px;">
+                                <input type="color" value="${set.color}" oninput="updateChar(${i}, 'color', this.value)" title="文字色">
+                                <input type="color" value="${set.shadowColor}" oninput="updateChar(${i}, 'shadowColor', this.value)" title="影の色">
                             </div>
                         </div>
                         <div class="input-item">
@@ -140,12 +139,12 @@
                             <input type="range" min="10" max="120" value="${set.size}" oninput="updateChar(${i}, 'size', this.value)">
                         </div>
                         <div class="input-item">
-                            <label>左右位置 (X微調整): ${set.offsetX}</label>
-                            <input type="range" min="-50" max="50" value="${set.offsetX}" oninput="updateChar(${i}, 'offsetX', this.value)">
+                            <label>左右(X): ${set.offsetX}</label>
+                            <input type="range" min="-60" max="60" value="${set.offsetX}" oninput="updateChar(${i}, 'offsetX', this.value)">
                         </div>
                         <div class="input-item">
-                            <label>上下位置 (Y微調整): ${set.offsetY}</label>
-                            <input type="range" min="-50" max="50" value="${set.offsetY}" oninput="updateChar(${i}, 'offsetY', this.value)">
+                            <label>上下(Y): ${set.offsetY}</label>
+                            <input type="range" min="-60" max="60" value="${set.offsetY}" oninput="updateChar(${i}, 'offsetY', this.value)">
                         </div>
                     </div>
                 `;
@@ -155,77 +154,77 @@
         }
 
         function updateChar(index, key, value) {
-            if (key === 'size' || key === 'offsetX' || key === 'offsetY') value = parseInt(value);
-            charSettings[index][key] = value;
-            renderCards(); // 値表示の更新のため再描画
+            charSettings[index][key] = (key === 'text' || key.includes('Color')) ? value : parseInt(value);
+            updateSVG();
+            // 数値表示の更新のみ（再描画によるスライダーのガタつき防止）
+            const labels = charCardsContainer.querySelectorAll('.char-card')[index].querySelectorAll('label');
+            if(key==='size') labels[1].innerText = `サイズ: ${value}px`;
+            if(key==='offsetX') labels[2].innerText = `左右(X): ${value}`;
+            if(key==='offsetY') labels[3].innerText = `上下(Y): ${value}`;
         }
 
-        function applyGlobalColor() {
-            const color = globalTextColorPicker.value;
-            charSettings.forEach(set => set.color = color);
+        function updateAllOffsets() {
+            document.getElementById('globalSpacingVal').innerText = globalSpacing.value;
+            updateSVG();
+        }
+
+        function applyGlobalColors() {
+            charSettings.forEach(set => {
+                set.color = globalTextColorPicker.value;
+                set.shadowColor = globalShadowColorPicker.value;
+            });
             renderCards();
         }
 
-        // 背景色の同期
         bgColorPicker.oninput = () => { bgColorHex.value = bgColorPicker.value.toUpperCase(); updateSVG(); };
         bgColorHex.oninput = () => { if(/^#[0-9A-F]{6}$/i.test(bgColorHex.value)) { bgColorPicker.value = bgColorHex.value; updateSVG(); } };
 
         function getSVGCode() {
             const mode = charMode.value;
             const bc = bgColorPicker.value;
+            const gSpace = parseInt(globalSpacing.value);
 
-            // 基本座標
             const baseCoords = {
-                "2": [{x: 14, y: 64}, {x: 55, y: 103}],
-                "3": [{x: 35, y: 55}, {x: 10, y: 103}, {x: 60, y: 103}],
-                "4": [{x: 10, y: 55}, {x: 60, y: 55}, {x: 10, y: 103}, {x: 60, y: 103}]
+                "2": [{x: 14 - gSpace, y: 64 - gSpace}, {x: 55 + gSpace, y: 103 + gSpace}],
+                "3": [{x: 35, y: 55 - gSpace}, {x: 10 - gSpace, y: 103 + gSpace}, {x: 60 + gSpace, y: 103 + gSpace}],
+                "4": [{x: 10 - gSpace, y: 55 - gSpace}, {x: 60 + gSpace, y: 55 - gSpace}, {x: 10 - gSpace, y: 103 + gSpace}, {x: 60 + gSpace, y: 103 + gSpace}]
             };
 
-            let textElements = '';
+            let filters = '';
+            let texts = '';
+
             charSettings.forEach((set, i) => {
                 const base = baseCoords[mode][i];
-                const finalX = base.x + set.offsetX;
-                const finalY = base.y + set.offsetY;
-                textElements += `<text x="${finalX}" y="${finalY}" style="fill: ${set.color}; font-family: sans-serif; font-size: ${set.size}px; font-weight: bold; filter: url(#yShadow);">${set.text}</text>`;
-            });
-
-            return `<svg width="800" height="800" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <filter id="yShadow" x="-50%" y="-50%" width="200%" height="200%">
+                // 影色を反映した個別フィルタを生成
+                filters += `
+    <filter id="f${i}" x="-50%" y="-50%" width="200%" height="200%">
       <feOffset dx="1.5" dy="1.5" in="SourceAlpha" result="o1"/><feGaussianBlur in="o1" stdDeviation="0.5" result="b1"/>
       <feFlood flood-color="white" flood-opacity="0.4" result="f1"/><feComposite in="f1" in2="b1" operator="in" result="hi"/>
       <feOffset dx="-1.5" dy="-1.5" in="SourceAlpha" result="o2"/><feGaussianBlur in="o2" stdDeviation="0.5" result="b2"/>
-      <feFlood flood-color="black" flood-opacity="0.6" result="f2"/><feComposite in="f2" in2="b2" operator="in" result="sh"/>
+      <feFlood flood-color="${set.shadowColor}" flood-opacity="0.8" result="f2"/><feComposite in="f2" in2="b2" operator="in" result="sh"/>
       <feMerge><feMergeNode in="hi"/><feMergeNode in="sh"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-  </defs>
+    </filter>`;
+                texts += `<text x="${base.x + set.offsetX}" y="${base.y + set.offsetY}" style="fill: ${set.color}; font-family: sans-serif; font-size: ${set.size}px; font-weight: bold; filter: url(#f${i});">${set.text}</text>`;
+            });
+
+            return `<svg width="800" height="800" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>${filters}</defs>
   <path d="M116 4H12c-4.4 0-8 3.6-8 8v104c0 4.4 3.6 8 8 8h104c4.4 0 8-3.6 8-8V12c0-4.4-3.6-8-8-8z" fill="${bc}"/>
   <path d="M 121.7 6.3 C 120.2 4.9 118.2 4 116 4 L 12 4 C 7.6 4 4 7.6 4 12 L 4 116 C 4 118.2 4.9 120.2 6.3 121.7 L 12.6 111 L 108.4 111 C 115.3 111 115 108.6 115 93.2 L 115 10.7 L 121.7 6.3 Z" fill="white" fill-opacity="0.2"/>
-  ${textElements}
+  <path d="M 34.737 9.922 C 34.737 7.622 33.137 6.922 23.937 7.222 C 16.237 7.522 12.437 8.422 10.137 11.222 C 7.837 14.022 7.237 19.722 7.137 26.522 C 7.137 31.322 7.137 35.822 9.637 35.822 C 13.037 35.822 13.037 27.922 15.837 23.522 C 21.237 14.822 34.737 12.922 34.737 9.922 L 34.737 9.922 Z" opacity=".5" fill="${bc}"/>
+  ${texts}
 </svg>`;
         }
 
         function updateSVG() { document.getElementById('svgContainer').innerHTML = getSVGCode(); }
-
-        async function copyToClipboard() {
-            await navigator.clipboard.writeText(getSVGCode());
-            showToast("コードをコピーしました！");
-        }
-
+        async function copyToClipboard() { await navigator.clipboard.writeText(getSVGCode()); showToast("コピーしました！"); }
         function downloadSVG() {
             const blob = new Blob([getSVGCode()], {type: 'image/svg+xml'});
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = "icon.svg";
-            document.body.appendChild(a); a.click();
-            document.body.removeChild(a);
-            showToast("SVGファイルを保存しました！");
+            const a = document.createElement('a'); a.href = url; a.download = "icon.svg";
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); showToast("保存しました！");
         }
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.innerText = msg; setTimeout(() => t.innerText = "", 3000);
-        }
+        function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; setTimeout(() => t.innerText = "", 3000); }
 
         charMode.onchange = initSettings;
         initSettings();
