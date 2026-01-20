@@ -3,25 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVG Multi-Char Generator</title>
+    <title>SVG Custom Icon Pro</title>
     <style>
         body { font-family: sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .app-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: flex; gap: 40px; max-width: 1000px; width: 100%; flex-wrap: wrap; }
+        .app-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: flex; gap: 40px; max-width: 1100px; width: 100%; flex-wrap: wrap; }
         
-        /* プレビュー画面 */
-        .preview-section { flex: 1.2; min-width: 350px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #ddd; border-radius: 10px; padding: 20px; background: #fafafa; }
+        /* プレビュー */
+        .preview-section { flex: 1.2; min-width: 350px; display: flex; flex-direction: column; align-items: center; border: 2px dashed #ddd; border-radius: 10px; padding: 20px; background: #fafafa; position: sticky; top: 20px; align-self: flex-start; }
         #svgContainer svg { width: 100%; height: auto; max-width: 400px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1)); }
 
         /* 操作パネル */
-        .controls { flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 15px; }
-        .control-group { display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        label { font-size: 0.85rem; font-weight: bold; color: #444; display: flex; justify-content: space-between; }
-        .val-disp { color: #007bff; }
-        input[type="text"], select { padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
-        input[type="range"] { cursor: pointer; }
+        .controls { flex: 1; min-width: 350px; display: flex; flex-direction: column; gap: 20px; }
+        .control-group { border: 1px solid #eee; padding: 15px; border-radius: 8px; background: #f9f9f9; }
+        h3 { margin-top: 0; font-size: 1rem; color: #333; border-left: 4px solid #007bff; padding-left: 10px; }
+        
+        .char-setting-row { display: grid; grid-template-columns: 40px 1fr 50px; gap: 10px; align-items: center; margin-bottom: 10px; }
+        input[type="text"].char-input { width: 40px; text-align: center; padding: 5px; font-size: 1.2rem; }
+        
+        /* カラー入力部分 */
+        .color-input-wrapper { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+        input[type="color"] { width: 40px; height: 40px; border: none; cursor: pointer; background: none; }
+        input[type="text"].hex-input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; }
+
+        label { font-size: 0.8rem; font-weight: bold; color: #666; }
+        input[type="range"] { width: 100%; }
 
         /* ボタン */
-        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .btn-group { display: flex; flex-direction: column; gap: 10px; }
         button { padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .copy-btn { background-color: #28a745; color: white; }
         .download-btn { background-color: #007bff; color: white; }
@@ -30,95 +38,130 @@
 </head>
 <body>
 
-    <h1>SVGアイコン作成ツール (2-4文字対応)</h1>
+    <h1>SVGアイコン作成ツール (自由調整版)</h1>
 
     <div class="app-container">
         <div class="preview-section">
             <div id="svgContainer"></div>
             <p style="color: #888; font-size: 0.8rem; margin-top: 10px;">プレビュー</p>
+            <div id="toast" class="toast"></div>
         </div>
 
         <div class="controls">
             <div class="control-group">
-                <label>文字数モード</label>
-                <select id="charMode">
-                    <option value="2" selected>2文字 (対角)</option>
+                <h3>1. 文字数を選択</h3>
+                <select id="charMode" style="width:100%; padding:8px;">
+                    <option value="2">2文字 (斜め)</option>
                     <option value="3">3文字 (三角形)</option>
                     <option value="4">4文字 (グリッド)</option>
                 </select>
             </div>
 
-            <div class="control-group" id="inputArea">
-                <label>文字入力</label>
-                <input type="text" id="textInput" value="仏語" maxlength="4" placeholder="文字を入力">
+            <div class="control-group">
+                <h3>2. 各文字の内容とサイズ</h3>
+                <div id="charSettingsContainer">
+                    </div>
+                <div style="margin-top:15px;">
+                    <label>全体の広がり調整</label>
+                    <input type="range" id="globalSpacing" min="-20" max="40" value="0">
+                </div>
             </div>
 
             <div class="control-group">
-                <label>文字サイズ <span class="val-disp" id="val-size">55</span></label>
-                <input type="range" id="fontSize" min="20" max="80" value="55">
-            </div>
-
-            <div class="control-group">
-                <label>文字の間隔（広がり） <span class="val-disp" id="val-spacing">0</span></label>
-                <input type="range" id="spacing" min="-20" max="40" value="0">
-            </div>
-
-            <div class="control-group">
+                <h3>3. 色の設定 (HEX対応)</h3>
                 <label>文字の色</label>
-                <input type="color" id="textColor" value="#333333">
-                <label style="margin-top:5px;">背景色</label>
-                <input type="color" id="bgColor" value="#c3d1d5">
+                <div class="color-input-wrapper">
+                    <input type="color" id="textColorPicker" value="#333333">
+                    <input type="text" id="textColorHex" value="#333333" class="hex-input" placeholder="#000000">
+                </div>
+                
+                <label>背景色</label>
+                <div class="color-input-wrapper">
+                    <input type="color" id="bgColorPicker" value="#c3d1d5">
+                    <input type="text" id="bgColorHex" value="#c3d1d5" class="hex-input" placeholder="#000000">
+                </div>
             </div>
 
             <div class="btn-group">
                 <button class="copy-btn" onclick="copyToClipboard()">コードをコピー</button>
                 <button class="download-btn" onclick="downloadSVG()">SVGを保存</button>
-                <div id="toast" class="toast"></div>
             </div>
         </div>
     </div>
 
     <script>
-        const inputs = ['charMode', 'textInput', 'fontSize', 'spacing', 'textColor', 'bgColor'];
+        const charMode = document.getElementById('charMode');
+        const charSettingsContainer = document.getElementById('charSettingsContainer');
+        const globalSpacing = document.getElementById('globalSpacing');
+        
+        // 色関連の要素
+        const textColorPicker = document.getElementById('textColorPicker');
+        const textColorHex = document.getElementById('textColorHex');
+        const bgColorPicker = document.getElementById('bgColorPicker');
+        const bgColorHex = document.getElementById('bgColorHex');
+
+        // デフォルト文字
+        const defaultChars = ["仏", "語", "機", "械"];
+
+        // 文字数に合わせて入力欄を生成
+        function setupCharInputs() {
+            const mode = parseInt(charMode.value);
+            charSettingsContainer.innerHTML = '';
+            for (let i = 0; i < mode; i++) {
+                const row = document.createElement('div');
+                row.className = 'char-setting-row';
+                row.innerHTML = `
+                    <input type="text" class="char-input" id="char${i}" value="${defaultChars[i]}" maxlength="1">
+                    <input type="range" id="size${i}" min="10" max="100" value="${mode == 4 ? 40 : 55}">
+                    <span style="font-size:0.7rem;"><span id="sizeVal${i}">${mode == 4 ? 40 : 55}</span>px</span>
+                `;
+                charSettingsContainer.appendChild(row);
+                
+                // イベント登録
+                document.getElementById(`char${i}`).addEventListener('input', update);
+                document.getElementById(`size${i}`).addEventListener('input', (e) => {
+                    document.getElementById(`sizeVal${i}`).innerText = e.target.value;
+                    update();
+                });
+            }
+            update();
+        }
+
+        // 色の同期
+        function syncColor(picker, hexInput) {
+            picker.addEventListener('input', () => {
+                hexInput.value = picker.value.toUpperCase();
+                update();
+            });
+            hexInput.addEventListener('input', () => {
+                const val = hexInput.value;
+                if (/^#[0-9A-F]{6}$/i.test(val)) {
+                    picker.value = val;
+                    update();
+                }
+            });
+        }
+        syncColor(textColorPicker, textColorHex);
+        syncColor(bgColorPicker, bgColorHex);
 
         function getSVGCode() {
-            const mode = document.getElementById('charMode').value;
-            const text = document.getElementById('textInput').value;
-            const size = document.getElementById('fontSize').value;
-            const spacing = parseInt(document.getElementById('spacing').value);
-            const tc = document.getElementById('textColor').value;
-            const bc = document.getElementById('bgColor').value;
-
-            // スライダーの値表示更新
-            document.getElementById('val-size').innerText = size;
-            document.getElementById('val-spacing').innerText = spacing;
+            const mode = parseInt(charMode.value);
+            const tc = textColorHex.value;
+            const bc = bgColorHex.value;
+            const gSpace = parseInt(globalSpacing.value);
 
             let textElements = '';
-            const chars = text.split('');
-
-            // 文字数に応じた配置ロジック
             const coords = {
-                "2": [
-                    {x: 14 - spacing, y: 64 - spacing}, // 左上
-                    {x: 55 + spacing, y: 103 + spacing} // 右下
-                ],
-                "3": [
-                    {x: 35, y: 55 - spacing},           // 中央上
-                    {x: 10 - spacing, y: 103 + spacing}, // 左下
-                    {x: 60 + spacing, y: 103 + spacing}  // 右下
-                ],
-                "4": [
-                    {x: 10 - spacing, y: 55 - spacing},  // 左上
-                    {x: 60 + spacing, y: 55 - spacing},  // 右上
-                    {x: 10 - spacing, y: 103 + spacing}, // 左下
-                    {x: 60 + spacing, y: 103 + spacing}  // 右下
-                ]
+                "2": [{x: 14 - gSpace, y: 64 - gSpace}, {x: 55 + gSpace, y: 103 + gSpace}],
+                "3": [{x: 35, y: 55 - gSpace}, {x: 10 - gSpace, y: 103 + gSpace}, {x: 60 + gSpace, y: 103 + gSpace}],
+                "4": [{x: 10 - gSpace, y: 55 - gSpace}, {x: 60 + gSpace, y: 55 - gSpace}, {x: 10 - gSpace, y: 103 + gSpace}, {x: 60 + gSpace, y: 103 + gSpace}]
             };
 
-            const currentCoords = coords[mode] || coords["2"];
-            
+            const currentCoords = coords[mode.toString()];
+
             for(let i=0; i < mode; i++) {
-                const char = chars[i] || "？";
+                const char = document.getElementById(`char${i}`).value || " ";
+                const size = document.getElementById(`size${i}`).value;
                 const pos = currentCoords[i];
                 textElements += `<text x="${pos.x}" y="${pos.y}" style="fill: ${tc}; font-family: sans-serif; font-size: ${size}px; font-weight: bold; filter: url(#yShadow);">${char}</text>`;
             }
@@ -126,14 +169,10 @@
             return `<svg width="800" height="800" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <filter id="yShadow" x="-50%" y="-50%" width="200%" height="200%">
-      <feOffset dx="1.5" dy="1.5" in="SourceAlpha" result="o1"/>
-      <feGaussianBlur in="o1" stdDeviation="0.5" result="b1"/>
-      <feFlood flood-color="white" flood-opacity="0.4" result="f1"/>
-      <feComposite in="f1" in2="b1" operator="in" result="hi"/>
-      <feOffset dx="-1.5" dy="-1.5" in="SourceAlpha" result="o2"/>
-      <feGaussianBlur in="o2" stdDeviation="0.5" result="b2"/>
-      <feFlood flood-color="black" flood-opacity="0.6" result="f2"/>
-      <feComposite in="f2" in2="b2" operator="in" result="sh"/>
+      <feOffset dx="1.5" dy="1.5" in="SourceAlpha" result="o1"/><feGaussianBlur in="o1" stdDeviation="0.5" result="b1"/>
+      <feFlood flood-color="white" flood-opacity="0.4" result="f1"/><feComposite in="f1" in2="b1" operator="in" result="hi"/>
+      <feOffset dx="-1.5" dy="-1.5" in="SourceAlpha" result="o2"/><feGaussianBlur in="o2" stdDeviation="0.5" result="b2"/>
+      <feFlood flood-color="black" flood-opacity="0.6" result="f2"/><feComposite in="f2" in2="b2" operator="in" result="sh"/>
       <feMerge><feMergeNode in="hi"/><feMergeNode in="sh"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
@@ -144,29 +183,10 @@
         }
 
         function update() { document.getElementById('svgContainer').innerHTML = getSVGCode(); }
-
-        // 初期設定リセット（モード変更時）
-        document.getElementById('charMode').addEventListener('change', () => {
-            const mode = document.getElementById('charMode').value;
-            if(mode === "4") {
-                document.getElementById('textInput').value = "機械修理";
-                document.getElementById('fontSize').value = 40;
-                document.getElementById('spacing').value = 5;
-            } else if(mode === "3") {
-                document.getElementById('textInput').value = "新発売";
-                document.getElementById('fontSize').value = 45;
-                document.getElementById('spacing').value = 5;
-            } else {
-                document.getElementById('textInput').value = "仏語";
-                document.getElementById('fontSize').value = 55;
-                document.getElementById('spacing').value = 0;
-            }
-            update();
-        });
-
+        
         async function copyToClipboard() {
             await navigator.clipboard.writeText(getSVGCode());
-            showToast("コピーしました！");
+            showToast("コピー完了！");
         }
 
         function downloadSVG() {
@@ -176,7 +196,7 @@
             a.href = url; a.download = "icon.svg";
             document.body.appendChild(a); a.click();
             document.body.removeChild(a);
-            showToast("保存しました！");
+            showToast("保存完了！");
         }
 
         function showToast(msg) {
@@ -184,8 +204,9 @@
             t.innerText = msg; setTimeout(() => t.innerText = "", 2000);
         }
 
-        inputs.forEach(id => document.getElementById(id).addEventListener('input', update));
-        update();
+        charMode.addEventListener('change', setupCharInputs);
+        globalSpacing.addEventListener('input', update);
+        setupCharInputs();
     </script>
 </body>
 </html>
