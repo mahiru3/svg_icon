@@ -8,7 +8,9 @@
     gradBottom: "#1BCBFF",
     numSize: 560,
     numGlow: 3.0,
-
+    previewSize: 576,
+    previewScale: 100,
+    
     crossColor: "#B8F5FF",
     crossWidth: 2.0,
 
@@ -33,6 +35,16 @@
   function render() {
     const svg = window.buildSVG(state);
     $("preview").innerHTML = svg;
+    const svgEl = document.querySelector("#preview svg");
+  if (svgEl) {
+    const size  = state.previewSize;
+    const scale = state.previewScale / 100;
+
+    svgEl.style.width  = `${size}px`;
+    svgEl.style.height = `${size}px`;
+    svgEl.style.transform = `scale(${scale})`;
+    svgEl.style.transformOrigin = "center center";
+  }
 
     $("numSizeVal").textContent = state.numSize;
     $("numGlowVal").textContent = state.numGlow;
@@ -95,6 +107,9 @@
 
   bind("bgGlow", "bgGlow", Number);
   bind("sparkCount", "sparkCount", Number);
+  bind("previewSize", "previewSize", Number);
+  bind("previewScale", "previewScale", Number);
+
 
   // buttons
   $("btnShow").addEventListener("click", () => {
