@@ -31,43 +31,41 @@
     bgGlow: 1.4,
     sparkCount: 12
   };
-// 右カラム：プレビュー高さをドラッグで変更
-(() => {
+// 右カラム：プレビュー高さをドラッグで変更（堅牢版）
+function initPreviewResizer(){
   const rightPane = document.getElementById("rightPane");
   const resizer = document.getElementById("resizer");
-  if (!rightPane || !resizer) return;
+  const previewCard = document.getElementById("previewCard");
+  if (!rightPane || !resizer || !previewCard) return;
 
-  // 初期値（プレビューの高さ）
   let previewH = null;
-
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
   const setPreviewHeight = (px) => {
-    // 上(プレビュー) / 中(resizer 10px) / 下(残り)
     rightPane.style.gridTemplateRows = `${px}px 10px 1fr`;
+  };
+
+  const getPreviewHeightNow = () => {
+    // previewCard の実測を使う（gridTemplateRows解析より確実）
+    return previewCard.getBoundingClientRect().height;
   };
 
   const onDown = (e) => {
     e.preventDefault();
+
     const rect = rightPane.getBoundingClientRect();
-
-    // 現在の上段高さを取得（初回のみ）
-    if (previewH === null) {
-      const rows = getComputedStyle(rightPane).gridTemplateRows.split(" ");
-      // "xxxpx 10px yyypx" 形式の1つ目を読む
-      previewH = parseFloat(rows[0]) || 420;
-    }
-
     const startY = e.clientY;
+
+    if (previewH === null) previewH = getPreviewHeightNow();
     const startH = previewH;
 
     const onMove = (ev) => {
       const dy = ev.clientY - startY;
       const next = startH + dy;
 
-      // 上段は最低220px、最大は右カラム高さ-200px程度
+      const min = 220;
       const max = rect.height - 200;
-      previewH = clamp(next, 220, max);
+      previewH = clamp(next, min, max);
       setPreviewHeight(previewH);
     };
 
@@ -81,7 +79,11 @@
   };
 
   resizer.addEventListener("mousedown", onDown);
-})();
+}
+
+// DOMができてから必ず初期化
+window.addEventListener("DOMContentLoaded", initPreviewResizer);
+
 
   function render() {
     const svg = window.buildSVG(state);
