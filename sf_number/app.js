@@ -103,29 +103,35 @@ window.addEventListener("DOMContentLoaded", initPreviewResizer);
     svgEl.style.transformOrigin = "center center";
   }
 
-setText("numSizeVal", state.numSize);
-setText("numGlowVal", state.numGlow);
-    $("crossWidthVal", state.crossWidth;
+    setText("numSizeVal", state.numSize);
+    setText("numGlowVal", state.numGlow);
+    setText("crossWidthVal", state.crossWidth);
 
-    setText("bgXVal", state.bgX;
-    $("bgYVal", state.bgY;
+    setText("bgXVal", state.bgX);
+    setText("bgYVal", state.bgY);
 
-    setText("c1RVal", state.c1R;
-    setText("c1XVal", state.c1X;
-    setText("c1YVal", state.c1Y;
-    setText("c2RVal", state.c2R;
-    setText("c2XVal", state.c2X;
-    setText("c2YVal", state.c2Y;
+    setText("c1RVal", state.c1R);
+    setText("c1XVal", state.c1X);
+    setText("c1YVal", state.c1Y);
 
-    setText("c3RVal", state.c3R;
-    setText("c3XVal", state.c3X;
-    setText("c3YVal", state.c3Y;
-    setText("c3StrokeVal", state.c3Stroke;
-    setText("c3OpacityVal", state.c3Opacity;
-    setText("c3RingWidthVal", state.c3RingWidth;
-    setText("c3RingOpacityVal", state.c3RingOpacity;
-    setText("bgGlowVal", state.bgGlow;
-    setText("sparkCountVal", state.sparkCount;
+    setText("c2RVal", state.c2R);
+    setText("c2XVal", state.c2X);
+    setText("c2YVal", state.c2Y);
+
+    setText("c3RVal", state.c3R);
+    setText("c3XVal", state.c3X);
+    setText("c3YVal", state.c3Y);
+
+    setText("c3StrokeVal", state.c3Stroke);
+    setText("c3OpacityVal", state.c3Opacity);
+    setText("c3RingWidthVal", state.c3RingWidth);
+    setText("c3RingOpacityVal", state.c3RingOpacity);
+
+    setText("bgGlowVal", state.bgGlow);
+    setText("sparkCountVal", state.sparkCount);
+
+    setText("previewSizeVal", state.previewSize);
+    setText("previewScaleVal", state.previewScale);
 
     return svg;
   }
