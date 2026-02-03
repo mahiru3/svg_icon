@@ -54,12 +54,14 @@ main{
   gap:10px 12px;
   align-items:end;
 }
+
 .field{ display:grid; gap:6px; }
 label{ font-size:12px; color:var(--muted); }
 
 input[type="text"],
 input[type="number"],
-input[type="color"]{
+input[type="color"],
+select{
   width:100%;
   padding:8px 10px;
   border-radius:10px;
@@ -68,12 +70,15 @@ input[type="color"]{
   color:var(--text);
   outline:none;
 }
+
 input[type="range"]{ width:100%; }
 
 .row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
 .small{ font-size:11px; color:var(--muted); }
 
 .btns{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+
 button{
   padding:10px 12px;
   border-radius:10px;
@@ -91,7 +96,6 @@ button.primary{
 }
 
 /* ---- right pane (preview + resizer + code) ---- */
-/* 右カラムのレイアウトとstickyは #rightPane に集約 */
 #rightPane{
   position:sticky;
   top:16px;
@@ -113,6 +117,7 @@ button.primary{
 
 /* プレビュー枠（市松） */
 .previewBox{
+  position:relative;
   border:1px dashed rgba(148,163,184,.35);
   border-radius:12px;
   padding:14px;
@@ -121,13 +126,28 @@ button.primary{
     linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px) 0 0 / 24px 24px,
     rgba(0,0,0,.18);
   min-height:420px;
-
   display:flex;
   align-items:center;
   justify-content:center;
-  overflow:auto; /* 大きくしても見切れない */
+  overflow:hidden; /* Fit表示を前提：スクロールさせない */
 }
-.previewBox svg{ width:min(576px,100%); height:auto; display:block; }
+
+#preview{
+  position:relative;
+  z-index:1;
+}
+
+/* プレビュー専用ガイド（出力SVGには含めない） */
+#guideOverlay{
+  position:absolute;
+  inset:14px;            /* .previewBox の padding と一致 */
+  pointer-events:none;
+  z-index:2;
+
+  width:calc(100% - 28px);
+  height:calc(100% - 28px);
+  overflow:visible;
+}
 
 /* resizer（ドラッグバー） */
 .resizer{
@@ -179,26 +199,11 @@ textarea{
   border-color:rgba(99,102,241,.22);
 }
 
-/* グループ別（任意：見分け） */
+/* グループ別（見分け） */
 .grid.zebra .field[data-group="num"]    { background:rgba(56,189,248,.08); border-color:rgba(56,189,248,.22); }
-.grid.zebra .field[data-group="grad"]   { background:rgba(34,197,94,.08);  border-color:rgba(34,197,94,.22); }
 .grid.zebra .field[data-group="cross"]  { background:rgba(168,85,247,.08); border-color:rgba(168,85,247,.22); }
 .grid.zebra .field[data-group="bgmove"] { background:rgba(251,146,60,.08); border-color:rgba(251,146,60,.22); }
 .grid.zebra .field[data-group="c1"]     { background:rgba(59,130,246,.08); border-color:rgba(59,130,246,.22); }
 .grid.zebra .field[data-group="c2"]     { background:rgba(20,184,166,.08); border-color:rgba(20,184,166,.22); }
 .grid.zebra .field[data-group="c3"]     { background:rgba(244,63,94,.08);  border-color:rgba(244,63,94,.22); }
-/* プレビューにガイドを重ねる（出力SVGには含めない） */
-.previewBox { position: relative; }
-
-#preview { position: relative; z-index: 1; }
-
-#guideOverlay{
-  position: absolute;
-  inset: 14px;            /* .previewBox の padding と一致 */
-  pointer-events: none;
-  z-index: 2;
-  width: calc(100% - 28px);
-  height: calc(100% - 28px);
-  overflow: visible;
-}
-
+.grid.zebra .field[data-group="preview"]{ background:rgba(34,197,94,.08);  border-color:rgba(34,197,94,.22); }
