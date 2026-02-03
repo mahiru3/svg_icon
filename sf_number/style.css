@@ -187,3 +187,18 @@ textarea{
 .grid.zebra .field[data-group="c1"]     { background:rgba(59,130,246,.08); border-color:rgba(59,130,246,.22); }
 .grid.zebra .field[data-group="c2"]     { background:rgba(20,184,166,.08); border-color:rgba(20,184,166,.22); }
 .grid.zebra .field[data-group="c3"]     { background:rgba(244,63,94,.08);  border-color:rgba(244,63,94,.22); }
+/* プレビューにガイドを重ねる（出力SVGには含めない） */
+.previewBox { position: relative; }
+
+#preview { position: relative; z-index: 1; }
+
+#guideOverlay{
+  position: absolute;
+  inset: 14px;            /* .previewBox の padding と一致 */
+  pointer-events: none;
+  z-index: 2;
+  width: calc(100% - 28px);
+  height: calc(100% - 28px);
+  overflow: visible;
+}
+
