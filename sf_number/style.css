@@ -1,215 +1,189 @@
-:root {
-  --bg: #0b0f16;
-  --text: #e5e7eb;
-  --muted: #94a3b8;
-  --line: rgba(148,163,184,.25);
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
-  background: radial-gradient(1200px 800px at 20% 10%, #0b1220, var(--bg));
-  color: var(--text);
-}
-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(17,24,39,.8), rgba(17,24,39,.2));
-}
-header h1 { margin: 0; font-size: 16px; font-weight: 700; }
-header p { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
-
-main {
-  display: grid;
-  grid-template-columns: 420px minmax(620px, 1fr);
-  gap: 16px;
-  padding: 16px;
-  align-items: start;
+:root{
+  --bg:#0b0f16;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+  --line:rgba(148,163,184,.25);
 }
 
+*{ box-sizing:border-box; }
 
-.card {
-  border: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(17,24,39,.9), rgba(15,23,42,.65));
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 30px rgba(0,0,0,.35);
-}
-.card .title {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--line);
-  font-size: 13px;
-  font-weight: 700;
-  background: rgba(0,0,0,.15);
-}
-.card .content { padding: 14px; }
-
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px 12px;
-  align-items: end;
-}
-.field { display: grid; gap: 6px; }
-label { font-size: 12px; color: var(--muted); }
-input[type="text"], input[type="number"], input[type="color"] {
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: rgba(0,0,0,.25);
-  color: var(--text);
-  outline: none;
-}
-input[type="range"] { width: 100%; }
-.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.small { font-size: 11px; color: var(--muted); }
-
-.btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
-button {
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(31,41,55,.9), rgba(17,24,39,.9));
-  color: var(--text);
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 12px;
-}
-button:hover { border-color: rgba(56,189,248,.45); }
-button.primary {
-  border-color: rgba(56,189,248,.55);
-  box-shadow: 0 0 0 3px rgba(56,189,248,.08) inset;
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+  background:radial-gradient(1200px 800px at 20% 10%, #0b1220, var(--bg));
+  color:var(--text);
 }
 
-/* 右側（プレビュー＋コード）をスクロール追従 */
-.previewWrap{
-  position: sticky;
-  top: 16px;
-  align-self: start;
-  display: grid;
-  gap: 12px;
-  height: calc(100vh - 32px);
+header{
+  padding:16px 20px;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(17,24,39,.8), rgba(17,24,39,.2));
+}
+header h1{ margin:0; font-size:16px; font-weight:700; }
+header p{ margin:6px 0 0; font-size:12px; color:var(--muted); }
+
+main{
+  display:grid;
+  grid-template-columns:420px minmax(620px,1fr);
+  gap:16px;
+  padding:16px;
+  align-items:start;
 }
 
-/* 右側カラム内で、プレビューとコードだけスクロールさせる */
-.previewWrap .card{
-  min-height: 0;
+/* ---- cards ---- */
+.card{
+  border:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(17,24,39,.9), rgba(15,23,42,.65));
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 8px 30px rgba(0,0,0,.35);
+}
+.card .title{
+  padding:12px 14px;
+  border-bottom:1px solid var(--line);
+  font-size:13px;
+  font-weight:700;
+  background:rgba(0,0,0,.15);
+}
+.card .content{ padding:14px; }
+
+/* ---- form/grid ---- */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px 12px;
+  align-items:end;
+}
+.field{ display:grid; gap:6px; }
+label{ font-size:12px; color:var(--muted); }
+
+input[type="text"],
+input[type="number"],
+input[type="color"]{
+  width:100%;
+  padding:8px 10px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:rgba(0,0,0,.25);
+  color:var(--text);
+  outline:none;
+}
+input[type="range"]{ width:100%; }
+
+.row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.small{ font-size:11px; color:var(--muted); }
+
+.btns{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+button{
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(31,41,55,.9), rgba(17,24,39,.9));
+  color:var(--text);
+  cursor:pointer;
+  font-weight:700;
+  font-size:12px;
+}
+button:hover{ border-color:rgba(56,189,248,.45); }
+button.primary{
+  border-color:rgba(56,189,248,.55);
+  box-shadow:0 0 0 3px rgba(56,189,248,.08) inset;
 }
 
-.previewWrap .card .content{
-  min-height: 0;
+/* ---- right pane (preview + resizer + code) ---- */
+/* 右カラムのレイアウトとstickyは #rightPane に集約 */
+#rightPane{
+  position:sticky;
+  top:16px;
+  align-self:start;
+
+  display:grid;
+  grid-template-rows:minmax(220px,55vh) 10px minmax(160px,1fr);
+  gap:12px;
+  height:calc(100vh - 32px);
 }
 
-/* プレビューは上、コードは下にして、どちらも見切れにくく */
-.previewWrap .card:nth-child(1) .content{
-  overflow: auto;
-  max-height: 55vh;
-}
-.previewWrap .card:nth-child(2) .content{
-  overflow: auto;
-  max-height: 35vh;
-}
-.previewBox {
-  border: 1px dashed rgba(148,163,184,.35);
-  border-radius: 12px;
-  padding: 14px;
+/* 右カラムのカードが縮められるように */
+#rightPane .card,
+#rightPane .card .content{ min-height:0; }
+
+/* 各カード内でスクロール */
+#previewCard .content{ overflow:auto; }
+#codeCard .content{ overflow:auto; }
+
+/* プレビュー枠（市松） */
+.previewBox{
+  border:1px dashed rgba(148,163,184,.35);
+  border-radius:12px;
+  padding:14px;
   background:
     linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px) 0 0 / 24px 24px,
     linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px) 0 0 / 24px 24px,
     rgba(0,0,0,.18);
-  display: grid;
-  place-items: center;
-  min-height: 420px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: auto; /* 大きくしても見切れない */
-}
-/* 右カラムは「上：プレビュー」「中央：resizer」「下：コード」の縦レイアウト */
-.previewWrap{
-  display: grid;
-  grid-template-rows: minmax(220px, 55vh) 10px minmax(160px, 1fr);
-  gap: 12px;
-  height: calc(100vh - 32px); /* stickyで画面内に収める */
-}
-#rightPane{
-  position: sticky;
-  top: 16px;
-  align-self: start;
+  min-height:420px;
 
-  display: grid;
-  grid-template-rows: minmax(220px, 55vh) 10px minmax(160px, 1fr);
-  gap: 12px;
-  height: calc(100vh - 32px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:auto; /* 大きくしても見切れない */
 }
+.previewBox svg{ width:min(576px,100%); height:auto; display:block; }
 
 /* resizer（ドラッグバー） */
 .resizer{
-  height: 10px;
-  border-radius: 10px;
-  cursor: row-resize;
-  background: linear-gradient(180deg, rgba(56,189,248,.25), rgba(56,189,248,.05));
-  border: 1px solid rgba(56,189,248,.35);
-  box-shadow: 0 0 0 3px rgba(56,189,248,.06) inset;
+  height:10px;
+  border-radius:10px;
+  cursor:row-resize;
+  background:linear-gradient(180deg, rgba(56,189,248,.25), rgba(56,189,248,.05));
+  border:1px solid rgba(56,189,248,.35);
+  box-shadow:0 0 0 3px rgba(56,189,248,.06) inset;
 }
 
-/* カード内部が伸縮できるように */
-.previewWrap .card{ min-height: 0; }
-.previewWrap .card .content{ min-height: 0; }
-
-/* プレビューとコードの中身は各カード内でスクロール */
-#previewCard .content{ overflow: auto; }
-#codeCard .content{ overflow: auto; }
-
-.previewBox svg { width: min(576px, 100%); height: auto; display: block; }
-
-textarea {
-  width: 100%;
-  min-height: 260px;
-  padding: 10px;
-  border-radius: 12px;
-  border: 1px solid var(--line);
-  background: rgba(0,0,0,.25);
-  color: var(--text);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 11px;
-  line-height: 1.45;
-  resize: vertical;
-  outline: none;
+/* textarea */
+textarea{
+  width:100%;
+  min-height:260px;
+  padding:10px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:rgba(0,0,0,.25);
+  color:var(--text);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:11px;
+  line-height:1.45;
+  resize:vertical;
+  outline:none;
 }
-/* 設定グリッド：見やすい行色分け */
+
+/* ---- zebra grouping ---- */
 .grid.zebra .field{
-  padding: 10px 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(148,163,184,.18);
+  padding:10px 10px;
+  border-radius:10px;
+  border:1px solid rgba(148,163,184,.18);
+  background:rgba(255,255,255,.02);
 }
 
-/* 2カラムの“行”を交互に色分け（通常） */
-.grid.zebra .field{
-  background: rgba(255,255,255,.02);
-}
+/* 2カラムの“行”を交互に（通常） */
 .grid.zebra .field:nth-child(4n+1),
 .grid.zebra .field:nth-child(4n+2){
-  background: rgba(56,189,248,.06);
+  background:rgba(56,189,248,.06);
 }
 .grid.zebra .field:nth-child(4n+3),
 .grid.zebra .field:nth-child(4n+4){
-  background: rgba(56,189,248,.02);
+  background:rgba(56,189,248,.02);
 }
 
-/* グループ指定がある場合は、行色より優先して統一（同色にまとめる） */
+/* data-group は行色より優先 */
 .grid.zebra .field[data-group]{
-  background: rgba(99,102,241,.08);
-  border-color: rgba(99,102,241,.22);
+  background:rgba(99,102,241,.08);
+  border-color:rgba(99,102,241,.22);
 }
 
-/* さらに：グループごとに色を少し変える（任意：見分け） */
-.grid.zebra .field[data-group="num"]    { background: rgba(56,189,248,.08); border-color: rgba(56,189,248,.22); }
-.grid.zebra .field[data-group="grad"]   { background: rgba(34,197,94,.08);  border-color: rgba(34,197,94,.22); }
-.grid.zebra .field[data-group="cross"]  { background: rgba(168,85,247,.08); border-color: rgba(168,85,247,.22); }
-.grid.zebra .field[data-group="bgmove"] { background: rgba(251,146,60,.08); border-color: rgba(251,146,60,.22); }
-
-.grid.zebra .field[data-group="c1"]     { background: rgba(59,130,246,.08); border-color: rgba(59,130,246,.22); }
-.grid.zebra .field[data-group="c2"]     { background: rgba(20,184,166,.08); border-color: rgba(20,184,166,.22); }
-.grid.zebra .field[data-group="c3"]     { background: rgba(244,63,94,.08);  border-color: rgba(244,63,94,.22); }
+/* グループ別（任意：見分け） */
+.grid.zebra .field[data-group="num"]    { background:rgba(56,189,248,.08); border-color:rgba(56,189,248,.22); }
+.grid.zebra .field[data-group="grad"]   { background:rgba(34,197,94,.08);  border-color:rgba(34,197,94,.22); }
+.grid.zebra .field[data-group="cross"]  { background:rgba(168,85,247,.08); border-color:rgba(168,85,247,.22); }
+.grid.zebra .field[data-group="bgmove"] { background:rgba(251,146,60,.08); border-color:rgba(251,146,60,.22); }
+.grid.zebra .field[data-group="c1"]     { background:rgba(59,130,246,.08); border-color:rgba(59,130,246,.22); }
+.grid.zebra .field[data-group="c2"]     { background:rgba(20,184,166,.08); border-color:rgba(20,184,166,.22); }
+.grid.zebra .field[data-group="c3"]     { background:rgba(244,63,94,.08);  border-color:rgba(244,63,94,.22); }
