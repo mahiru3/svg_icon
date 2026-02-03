@@ -82,13 +82,33 @@ button.primary {
   box-shadow: 0 0 0 3px rgba(56,189,248,.08) inset;
 }
 
-.previewWrap { 
-  display: grid; 
-  grid-template-columns: 1fr; 
-  gap: 12px;
+/* 右側（プレビュー＋コード）をスクロール追従 */
+.previewWrap{
   position: sticky;
   top: 16px;
   align-self: start;
+  display: grid;
+  gap: 12px;
+  height: calc(100vh - 32px);
+}
+
+/* 右側カラム内で、プレビューとコードだけスクロールさせる */
+.previewWrap .card{
+  min-height: 0;
+}
+
+.previewWrap .card .content{
+  min-height: 0;
+}
+
+/* プレビューは上、コードは下にして、どちらも見切れにくく */
+.previewWrap .card:nth-child(1) .content{
+  overflow: auto;
+  max-height: 55vh;
+}
+.previewWrap .card:nth-child(2) .content{
+  overflow: auto;
+  max-height: 35vh;
 }
 .previewBox {
   border: 1px dashed rgba(148,163,184,.35);
