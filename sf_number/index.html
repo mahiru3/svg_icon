@@ -3,164 +3,164 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Touch Number SVG Generator</title>
+  <title>SFっぽいアイコンつくるやつ</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <header>
-    <h1>Touch Number SVG Generator（576×576 / 背景透過）</h1>
-    <p>①数字、②グラデーション2色、③十字（色/太さ）、④〜⑥円（色/大きさ/位置）＋背景一括移動＋⑥リング（幅/透明度）。変更→即プレビュー。コード表示/DL。</p>
+    <h1>Touch Number SVG Generator（57×57 / 背景透過）</h1>
+    <p>①数字、②グラデーション2色、③十字（色/太さ）、④〜円（色/大きさ/位置）＋背景一括移動＋リング（幅/透明度）。変更→即プレビュー。コード表示/DL。</p>
   </header>
 
   <main>
     <section class="card">
       <div class="title">設定</div>
       <div class="content">
-        <div class="grid">
-          <div class="field">
-            <label>① 数字（0〜99など）</label>
+        <div class="grid zebra" id="settingsGrid">
+          <div class="field" data-group="num">
+            <label> 表示文字</label>
             <input id="numText" type="text" value="0" maxlength="3" />
           </div>
 
-          <div class="field">
-            <label>② 数字グラデーション（上→下）</label>
+          <div class="field" data-group="num">
+            <label> グラデーション（上→下）</label>
             <div class="row">
-              <div class="field">
+              <div class="field" data-group="num">
                 <label class="small">色1（上）</label>
                 <input id="gradTop" type="color" value="#E9FFFF" />
               </div>
-              <div class="field">
+              <div class="field" data-group="num">
                 <label class="small">色2（下）</label>
                 <input id="gradBottom" type="color" value="#1BCBFF" />
               </div>
             </div>
           </div>
 
-          <div class="field">
-            <label>数字サイズ（最大化）</label>
-            <input id="numSize" type="range" min="420" max="620" step="1" value="560" />
-            <div class="small"><span id="numSizeVal">560</span></div>
+          <div class="field" data-group="num">
+            <label>文字サイズ（最大化）</label>
+            <input id="numSize" type="range" min="420" max="20" step="1" value="50" />
+            <div class="small"><span id="numSizeVal">50</span></div>
           </div>
 
-          <div class="field">
-            <label>数字グロー（強さ）</label>
+          <div class="field" data-group="num">
+            <label>文字グロー（強さ）</label>
             <input id="numGlow" type="range" min="0" max="8" step="0.1" value="3.0" />
             <div class="small"><span id="numGlowVal">3.0</span></div>
           </div>
 
-          <div class="field">
-            <label>③ 十字：色</label>
+          <div class="field" data-group="cross">
+            <label> 十字：色</label>
             <input id="crossColor" type="color" value="#B8F5FF" />
           </div>
 
-          <div class="field">
-            <label>③ 十字：線の太さ</label>
-            <input id="crossWidth" type="range" min="1" max="6" step="0.1" value="2.0" />
+          <div class="field" data-group="cross">
+            <label> 十字：線の太さ</label>
+            <input id="crossWidth" type="range" min="1" max="" step="0.1" value="2.0" />
             <div class="small"><span id="crossWidthVal">2.0</span></div>
           </div>
 
           <!-- 背景一括移動（十字＋円） -->
-          <div class="field">
+          <div class="field" data-group="bgmove">
             <label>背景素材（十字＋円）：一括 位置X</label>
-            <input id="bgX" type="range" min="-160" max="160" step="1" value="0" />
+            <input id="bgX" type="range" min="-10" max="10" step="1" value="0" />
             <div class="small"><span id="bgXVal">0</span></div>
           </div>
-          <div class="field">
+          <div class="field" data-group="bgmove">
             <label>背景素材（十字＋円）：一括 位置Y</label>
-            <input id="bgY" type="range" min="-160" max="160" step="1" value="0" />
+            <input id="bgY" type="range" min="-10" max="10" step="1" value="0" />
             <div class="small"><span id="bgYVal">0</span></div>
           </div>
 
           <!-- 円1 -->
-          <div class="field">
-            <label>④ 円1（内側）：色</label>
+          <div class="field" data-group="c1">
+            <label>④円1（内側）：色</label>
             <input id="c1Color" type="color" value="#77ECFF" />
           </div>
-          <div class="field">
-            <label>④ 円1：半径</label>
-            <input id="c1R" type="range" min="10" max="260" step="1" value="92" />
+          <div class="field" data-group="c1">
+            <label>④円1：半径</label>
+            <input id="c1R" type="range" min="10" max="20" step="1" value="92" />
             <div class="small"><span id="c1RVal">92</span></div>
           </div>
-          <div class="field">
-            <label>④ 円1：位置X</label>
+          <div class="field" data-group="c1">
+            <label>④円1：位置X</label>
             <input id="c1X" type="range" min="-120" max="120" step="1" value="0" />
             <div class="small"><span id="c1XVal">0</span></div>
           </div>
-          <div class="field">
-            <label>④ 円1：位置Y</label>
+          <div class="field" data-group="c1">
+            <label>④円1：位置Y</label>
             <input id="c1Y" type="range" min="-120" max="120" step="1" value="0" />
             <div class="small"><span id="c1YVal">0</span></div>
           </div>
 
           <!-- 円2 -->
-          <div class="field">
-            <label>⑤ 円2：色</label>
+          <div class="field" data-group="c2"> 
+            <label>円2：色</label>
             <input id="c2Color" type="color" value="#77ECFF" />
           </div>
-          <div class="field">
-            <label>⑤ 円2：半径</label>
-            <input id="c2R" type="range" min="10" max="300" step="1" value="126" />
-            <div class="small"><span id="c2RVal">126</span></div>
+          <div class="field" data-group="c2"> 
+            <label>円2：半径</label>
+            <input id="c2R" type="range" min="10" max="300" step="1" value="12" />
+            <div class="small"><span id="c2RVal">12</span></div>
           </div>
-          <div class="field">
-            <label>⑤ 円2：位置X</label>
+          <div class="field" data-group="c2"> 
+            <label>円2：位置X</label>
             <input id="c2X" type="range" min="-120" max="120" step="1" value="0" />
             <div class="small"><span id="c2XVal">0</span></div>
           </div>
-          <div class="field">
-            <label>⑤ 円2：位置Y</label>
+          <div class="field" data-group="c2"> 
+            <label>円2：位置Y</label>
             <input id="c2Y" type="range" min="-120" max="120" step="1" value="0" />
             <div class="small"><span id="c2YVal">0</span></div>
           </div>
 
           <!-- 円3 -->
-          <div class="field">
-            <label>⑥ 円3（外側）：色</label>
+          <div class="field" data-group="c3"> 
+            <label> 円3（外側）：色</label>
             <input id="c3Color" type="color" value="#77ECFF" />
           </div>
-          <div class="field">
-            <label>⑥ 円3：半径</label>
-            <input id="c3R" type="range" min="10" max="360" step="1" value="160" />
-            <div class="small"><span id="c3RVal">160</span></div>
+         <div class="field" data-group="c3"> 
+            <label> 円3：半径</label>
+            <input id="c3R" type="range" min="10" max="30" step="1" value="10" />
+            <div class="small"><span id="c3RVal">10</span></div>
           </div>
-          <div class="field">
-            <label>⑥ 円3：位置X</label>
+          <div class="field" data-group="c3"> 
+            <label> 円3：位置X</label>
             <input id="c3X" type="range" min="-120" max="120" step="1" value="0" />
             <div class="small"><span id="c3XVal">0</span></div>
           </div>
-          <div class="field">
-            <label>⑥ 円3：位置Y</label>
+          <div class="field" data-group="c3"> 
+            <label> 円3：位置Y</label>
             <input id="c3Y" type="range" min="-120" max="120" step="1" value="0" />
             <div class="small"><span id="c3YVal">0</span></div>
           </div>
 
-          <!-- ⑥ 追加：線と透明度 -->
-          <div class="field">
-            <label>⑥ 円3：線の太さ</label>
+          <!--  追加：線と透明度 -->
+          <div class="field" data-group="c3"> 
+            <label> 円3：線の太さ</label>
             <input id="c3Stroke" type="range" min="1" max="8" step="0.1" value="2" />
             <div class="small"><span id="c3StrokeVal">2</span></div>
           </div>
-          <div class="field">
-            <label>⑥ 円3：線の透明度</label>
+          <div class="field" data-group="c3"> 
+            <label> 円3：線の透明度</label>
             <input id="c3Opacity" type="range" min="0" max="1" step="0.01" value="0.12" />
             <div class="small"><span id="c3OpacityVal">0.12</span></div>
           </div>
 
-          <!-- ⑥ 追加：外側リング -->
+          <!--  追加：外側リング -->
           <div class="field">
-            <label>⑥ 外側リング：幅（0で非表示）</label>
-            <input id="c3RingWidth" type="range" min="0" max="60" step="1" value="22" />
+            <label> 外側リング：幅（0で非表示）</label>
+            <input id="c3RingWidth" type="range" min="0" max="0" step="1" value="22" />
             <div class="small"><span id="c3RingWidthVal">22</span></div>
           </div>
           <div class="field">
-            <label>⑥ 外側リング：透明度</label>
+            <label> 外側リング：透明度</label>
             <input id="c3RingOpacity" type="range" min="0" max="1" step="0.01" value="0.85" />
             <div class="small"><span id="c3RingOpacityVal">0.85</span></div>
           </div>
 
           <div class="field">
             <label>背面グロー（十字・円）</label>
-            <input id="bgGlow" type="range" min="0" max="6" step="0.1" value="1.4" />
+            <input id="bgGlow" type="range" min="0" max="" step="0.1" value="1.4" />
             <div class="small"><span id="bgGlowVal">1.4</span></div>
           </div>
 
