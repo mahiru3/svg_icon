@@ -3,31 +3,34 @@
   const $ = (id) => document.getElementById(id);
 
   const state = {
+    // 出力：固定576（svg.js側で固定）
     numText: "0",
     gradTop: "#E9FFFF",
     gradBottom: "#1BCBFF",
-    numSize: 560,
-    numGlow: 3.0,
 
-    // ④ 文字のX/Yスケール
-    numScaleX: 1.0,
-    numScaleY: 1.0,
+    // 3. 文字
+    numSize: 560,
+    numGlow: 3.0,      // 1
+    numScaleX: 1.0,    // 2
+    numScaleY: 1.0,    // 2
+    numX: 0,           // 6
+    numY: 0,           // 6
 
     // プレビュー
     previewMode: "fit", // "fit" | "actual"
-    previewScale: 100,  // actual時の倍率
-    showGuide: true,    // プレビュー専用ガイド（SVGコードには入れない）
+    previewScale: 100,  // 4（actual時のみ適用）
+    showGuide: true,
 
     // 出力
     clipMode: "clip",   // "clip" | "noclip"
 
+    // 4. 背景
     crossColor: "#B8F5FF",
     crossWidth: 2.0,
 
-    // 背景素材（十字＋円＋粒子）一括移動＆拡縮
     bgX: 0,
     bgY: 0,
-    bgScale: 1.0,
+    bgScale: 1.0,       // 3
 
     c1Color: "#77ECFF", c1R: 92,  c1X: 0, c1Y: 0,
     c2Color: "#77ECFF", c2R: 126, c2X: 0, c2Y: 0,
@@ -39,21 +42,27 @@
     c3RingOpacity: 0.85,
 
     bgGlow: 1.4,
-    sparkCount: 12
+    sparkCount: 12,
+
+    // 5. 設定カラム幅
+    leftWidth: 420
   };
 
-  // 値表示の安全更新
   const setText = (id, v) => {
     const el = $(id);
     if (el) el.textContent = v;
   };
 
-  // プレビューの「見切れない」変形を適用（svg/ガイド共通）
+  const applyLeftWidth = () => {
+    document.documentElement.style.setProperty("--leftW", `${state.leftWidth}px`);
+    setText("leftWidthVal", state.leftWidth);
+  };
+
+  // プレビュー変形（svg/ガイド共通）
   const applyPreviewTransform = (el) => {
     if (!el) return;
     const base = 576;
 
-    // 100%（実寸）モード
     if (state.previewMode === "actual") {
       el.style.width = `${base}px`;
       el.style.height = `${base}px`;
@@ -62,10 +71,9 @@
       return;
     }
 
-    // Fit（全体表示）：プレビュー枠に収まる倍率を自動計算
     const box = $("previewBox");
     if (!box) return;
-    const pad = 28; // padding 14×2
+    const pad = 28; // 14*2
     const availW = Math.max(50, box.clientWidth - pad);
     const availH = Math.max(50, box.clientHeight - pad);
     const fit = Math.min(availW / base, availH / base);
@@ -77,6 +85,8 @@
   };
 
   function render() {
+    applyLeftWidth();
+
     const svg = window.buildSVG(state);
     $("preview").innerHTML = svg;
 
@@ -88,12 +98,15 @@
 
     if (guideEl) guideEl.style.display = state.showGuide ? "block" : "none";
 
+    // 表示値
     setText("numSizeVal", state.numSize);
-    setText("numGlowVal", state.numGlow);
+    setText("numGlowVal", state.numGlow.toFixed(1));
     setText("numScaleXVal", state.numScaleX.toFixed(2));
     setText("numScaleYVal", state.numScaleY.toFixed(2));
+    setText("numXVal", state.numX);
+    setText("numYVal", state.numY);
 
-    setText("crossWidthVal", state.crossWidth);
+    setText("crossWidthVal", state.crossWidth.toFixed(1));
 
     setText("bgXVal", state.bgX);
     setText("bgYVal", state.bgY);
@@ -111,12 +124,12 @@
     setText("c3XVal", state.c3X);
     setText("c3YVal", state.c3Y);
 
-    setText("c3StrokeVal", state.c3Stroke);
-    setText("c3OpacityVal", state.c3Opacity);
+    setText("c3StrokeVal", state.c3Stroke.toFixed(1));
+    setText("c3OpacityVal", state.c3Opacity.toFixed(2));
     setText("c3RingWidthVal", state.c3RingWidth);
-    setText("c3RingOpacityVal", state.c3RingOpacity);
+    setText("c3RingOpacityVal", state.c3RingOpacity.toFixed(2));
 
-    setText("bgGlowVal", state.bgGlow);
+    setText("bgGlowVal", state.bgGlow.toFixed(1));
     setText("sparkCountVal", state.sparkCount);
 
     setText("previewScaleVal", state.previewScale);
@@ -135,7 +148,10 @@
     el.addEventListener("change", handler);
   }
 
-  // --- bind（通常） ---
+  // bind：レイアウト
+  bind("leftWidth", "leftWidth", Number);
+
+  // bind：文字
   bind("numText", "numText", (v) => v);
   bind("gradTop", "gradTop");
   bind("gradBottom", "gradBottom");
@@ -143,10 +159,12 @@
   bind("numGlow", "numGlow", Number);
   bind("numScaleX", "numScaleX", Number);
   bind("numScaleY", "numScaleY", Number);
+  bind("numX", "numX", Number);
+  bind("numY", "numY", Number);
 
+  // 背景
   bind("crossColor", "crossColor");
   bind("crossWidth", "crossWidth", Number);
-
   bind("bgX", "bgX", Number);
   bind("bgY", "bgY", Number);
   bind("bgScale", "bgScale", Number);
@@ -163,6 +181,7 @@
   bind("bgGlow", "bgGlow", Number);
   bind("sparkCount", "sparkCount", Number);
 
+  // プレビュー
   bind("previewScale", "previewScale", Number);
   bind("clipMode", "clipMode", (v) => v);
 
@@ -180,13 +199,12 @@
     state.previewMode = "fit";
     render();
   });
-
   $("btnActual")?.addEventListener("click", () => {
     state.previewMode = "actual";
     render();
   });
 
-  // buttons
+  // ボタン
   $("btnShow")?.addEventListener("click", () => {
     $("code").value = window.buildSVG(state);
     $("code").focus();
@@ -220,11 +238,9 @@
     URL.revokeObjectURL(url);
   });
 
-  $("btnReset")?.addEventListener("click", () => {
-    location.reload();
-  });
+  $("btnReset")?.addEventListener("click", () => location.reload());
 
-  // 右カラム：プレビュー高さをドラッグで変更（堅牢版）
+  // 右カラム：プレビュー高さドラッグ
   function initPreviewResizer(){
     const rightPane = $("rightPane");
     const resizer = $("resizer");
@@ -233,31 +249,22 @@
 
     let previewH = null;
     const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
-
-    const setPreviewHeight = (px) => {
-      rightPane.style.gridTemplateRows = `${px}px 10px 1fr`;
-    };
-
+    const setPreviewHeight = (px) => { rightPane.style.gridTemplateRows = `${px}px 10px 1fr`; };
     const getPreviewHeightNow = () => previewCard.getBoundingClientRect().height;
 
     const onDown = (e) => {
       e.preventDefault();
-
       const rect = rightPane.getBoundingClientRect();
       const startY = e.clientY;
-
       if (previewH === null) previewH = getPreviewHeightNow();
       const startH = previewH;
 
       const onMove = (ev) => {
         const dy = ev.clientY - startY;
         const next = startH + dy;
-
-        const min = 220;
-        const max = rect.height - 200;
-        previewH = clamp(next, min, max);
+        previewH = clamp(next, 220, rect.height - 200);
         setPreviewHeight(previewH);
-        render(); // 高さが変わるのでFit倍率を再計算
+        render();
       };
 
       const onUp = () => {
@@ -272,11 +279,49 @@
     resizer.addEventListener("mousedown", onDown);
   }
 
+  // 5. 左カラム幅ドラッグ（colResizer）
+  function initColumnResizer(){
+    const bar = $("colResizer");
+    const main = $("mainGrid");
+    if (!bar || !main) return;
+
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+    const onDown = (e) => {
+      e.preventDefault();
+      const rect = main.getBoundingClientRect();
+      const startX = e.clientX;
+      const startW = state.leftWidth;
+
+      const onMove = (ev) => {
+        const dx = ev.clientX - startX;
+        const next = clamp(startW + dx, 320, 760);
+        state.leftWidth = Math.round(next / 10) * 10;
+
+        const slider = $("leftWidth");
+        if (slider) slider.value = String(state.leftWidth);
+
+        applyLeftWidth();
+        render();
+      };
+
+      const onUp = () => {
+        window.removeEventListener("mousemove", onMove);
+        window.removeEventListener("mouseup", onUp);
+      };
+
+      window.addEventListener("mousemove", onMove);
+      window.addEventListener("mouseup", onUp);
+    };
+
+    bar.addEventListener("mousedown", onDown);
+  }
+
   window.addEventListener("DOMContentLoaded", () => {
     initPreviewResizer();
+    initColumnResizer();
     render();
   });
 
-  // ウィンドウサイズ変更でもFitを再計算
   window.addEventListener("resize", () => render());
 })();
