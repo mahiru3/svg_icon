@@ -121,6 +121,10 @@ button.primary {
   display: grid;
   place-items: center;
   min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto; /* 大きくしても見切れない */
 }
 .previewBox svg { width: min(576px, 100%); height: auto; display: block; }
 
