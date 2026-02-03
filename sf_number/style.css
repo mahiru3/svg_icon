@@ -126,6 +126,32 @@ button.primary {
   justify-content: center;
   overflow: auto; /* 大きくしても見切れない */
 }
+/* 右カラムは「上：プレビュー」「中央：resizer」「下：コード」の縦レイアウト */
+.previewWrap{
+  display: grid;
+  grid-template-rows: minmax(220px, 55vh) 10px minmax(160px, 1fr);
+  gap: 12px;
+  height: calc(100vh - 32px); /* stickyで画面内に収める */
+}
+
+/* resizer（ドラッグバー） */
+.resizer{
+  height: 10px;
+  border-radius: 10px;
+  cursor: row-resize;
+  background: linear-gradient(180deg, rgba(56,189,248,.25), rgba(56,189,248,.05));
+  border: 1px solid rgba(56,189,248,.35);
+  box-shadow: 0 0 0 3px rgba(56,189,248,.06) inset;
+}
+
+/* カード内部が伸縮できるように */
+.previewWrap .card{ min-height: 0; }
+.previewWrap .card .content{ min-height: 0; }
+
+/* プレビューとコードの中身は各カード内でスクロール */
+#previewCard .content{ overflow: auto; }
+#codeCard .content{ overflow: auto; }
+
 .previewBox svg { width: min(576px, 100%); height: auto; display: block; }
 
 textarea {
