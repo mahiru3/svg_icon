@@ -9,15 +9,22 @@
 <body>
   <header>
     <h1>Touch Number SVG Generator（576×576 / 背景透過）</h1>
-    <p>プレビューはFitで全体表示。出力SVGは576×576固定。背景素材（十字＋円＋粒子）一括移動＆拡縮。文字はXY別スケール対応。コード表示/コピー/DL。</p>
+    <p>出力SVGは576×576固定。背景素材（十字＋円＋粒子）一括移動＆拡縮。文字はXY別スケール＋位置調整。プレビューはFit/100%切替＋倍率。コード表示/コピー/DL。</p>
   </header>
 
-  <main>
+  <main id="mainGrid">
     <!-- 左：設定 -->
-    <section class="card">
+    <section class="card" id="leftPane">
       <div class="title">設定</div>
       <div class="content">
         <div class="grid zebra" id="settingsGrid">
+
+          <!-- 5. 設定カラム幅 -->
+          <div class="field" data-group="layout">
+            <label>レイアウト：設定カラム幅（px）</label>
+            <input id="leftWidth" type="range" min="320" max="760" step="10" value="420" />
+            <div class="small"><span id="leftWidthVal">420</span> px（ドラッグでも変更可）</div>
+          </div>
 
           <!-- ① 表示文字 -->
           <div class="field" data-group="num">
@@ -40,30 +47,44 @@
             </div>
           </div>
 
-          <!-- ③ 文字サイズ（見切れるほど大きく） -->
+          <!-- ③ 文字サイズ -->
           <div class="field" data-group="num">
             <label>文字サイズ（見切れ可）</label>
-            <input id="numSize" type="range" min="200" max="1200" step="1" value="560" />
+            <input id="numSize" type="range" min="200" max="1400" step="1" value="560" />
             <div class="small"><span id="numSizeVal">560</span></div>
           </div>
 
+          <!-- 1. 文字グロー -->
           <div class="field" data-group="num">
             <label>文字グロー（強さ）</label>
-            <input id="numGlow" type="range" min="0" max="12" step="0.1" value="3.0" />
+            <input id="numGlow" type="range" min="0" max="18" step="0.1" value="3.0" />
             <div class="small"><span id="numGlowVal">3.0</span></div>
           </div>
 
-          <!-- ④ 文字スケール（X/Y別） -->
+          <!-- 2. 文字スケール（X/Y） -->
           <div class="field" data-group="num">
             <label>文字：横方向スケール（X）</label>
-            <input id="numScaleX" type="range" min="0.5" max="2.5" step="0.01" value="1.00" />
+            <input id="numScaleX" type="range" min="0.3" max="3.0" step="0.01" value="1.00" />
             <div class="small"><span id="numScaleXVal">1.00</span></div>
           </div>
 
           <div class="field" data-group="num">
             <label>文字：縦方向スケール（Y）</label>
-            <input id="numScaleY" type="range" min="0.5" max="2.5" step="0.01" value="1.00" />
+            <input id="numScaleY" type="range" min="0.3" max="3.0" step="0.01" value="1.00" />
             <div class="small"><span id="numScaleYVal">1.00</span></div>
+          </div>
+
+          <!-- 6. 文字位置 -->
+          <div class="field" data-group="num">
+            <label>文字：位置X</label>
+            <input id="numX" type="range" min="-180" max="180" step="1" value="0" />
+            <div class="small"><span id="numXVal">0</span></div>
+          </div>
+
+          <div class="field" data-group="num">
+            <label>文字：位置Y</label>
+            <input id="numY" type="range" min="-180" max="180" step="1" value="0" />
+            <div class="small"><span id="numYVal">0</span></div>
           </div>
 
           <!-- 十字 -->
@@ -74,27 +95,27 @@
 
           <div class="field" data-group="cross">
             <label>十字：線の太さ</label>
-            <input id="crossWidth" type="range" min="0.5" max="8" step="0.1" value="2.0" />
+            <input id="crossWidth" type="range" min="0.5" max="10" step="0.1" value="2.0" />
             <div class="small"><span id="crossWidthVal">2.0</span></div>
           </div>
 
           <!-- 背景素材 一括移動 -->
           <div class="field" data-group="bgmove">
             <label>背景素材（十字＋円＋粒子）：一括 位置X</label>
-            <input id="bgX" type="range" min="-120" max="120" step="1" value="0" />
+            <input id="bgX" type="range" min="-180" max="180" step="1" value="0" />
             <div class="small"><span id="bgXVal">0</span></div>
           </div>
 
           <div class="field" data-group="bgmove">
             <label>背景素材（十字＋円＋粒子）：一括 位置Y</label>
-            <input id="bgY" type="range" min="-120" max="120" step="1" value="0" />
+            <input id="bgY" type="range" min="-180" max="180" step="1" value="0" />
             <div class="small"><span id="bgYVal">0</span></div>
           </div>
 
-          <!-- ② 背景素材 一括拡大縮小 -->
+          <!-- 3. 背景素材 一括拡大縮小 -->
           <div class="field" data-group="bgmove">
             <label>背景素材（十字＋円＋粒子）：一括 拡大縮小</label>
-            <input id="bgScale" type="range" min="0.2" max="2.5" step="0.01" value="1.00" />
+            <input id="bgScale" type="range" min="0.2" max="3.0" step="0.01" value="1.00" />
             <div class="small"><span id="bgScaleVal">1.00</span></div>
           </div>
 
@@ -105,17 +126,17 @@
           </div>
           <div class="field" data-group="c1">
             <label>円1：半径</label>
-            <input id="c1R" type="range" min="10" max="260" step="1" value="92" />
+            <input id="c1R" type="range" min="10" max="320" step="1" value="92" />
             <div class="small"><span id="c1RVal">92</span></div>
           </div>
           <div class="field" data-group="c1">
             <label>円1：位置X</label>
-            <input id="c1X" type="range" min="-200" max="200" step="1" value="0" />
+            <input id="c1X" type="range" min="-260" max="260" step="1" value="0" />
             <div class="small"><span id="c1XVal">0</span></div>
           </div>
           <div class="field" data-group="c1">
             <label>円1：位置Y</label>
-            <input id="c1Y" type="range" min="-200" max="200" step="1" value="0" />
+            <input id="c1Y" type="range" min="-260" max="260" step="1" value="0" />
             <div class="small"><span id="c1YVal">0</span></div>
           </div>
 
@@ -126,17 +147,17 @@
           </div>
           <div class="field" data-group="c2">
             <label>円2：半径</label>
-            <input id="c2R" type="range" min="10" max="320" step="1" value="126" />
+            <input id="c2R" type="range" min="10" max="420" step="1" value="126" />
             <div class="small"><span id="c2RVal">126</span></div>
           </div>
           <div class="field" data-group="c2">
             <label>円2：位置X</label>
-            <input id="c2X" type="range" min="-200" max="200" step="1" value="0" />
+            <input id="c2X" type="range" min="-260" max="260" step="1" value="0" />
             <div class="small"><span id="c2XVal">0</span></div>
           </div>
           <div class="field" data-group="c2">
             <label>円2：位置Y</label>
-            <input id="c2Y" type="range" min="-200" max="200" step="1" value="0" />
+            <input id="c2Y" type="range" min="-260" max="260" step="1" value="0" />
             <div class="small"><span id="c2YVal">0</span></div>
           </div>
 
@@ -147,23 +168,23 @@
           </div>
           <div class="field" data-group="c3">
             <label>円3：半径</label>
-            <input id="c3R" type="range" min="10" max="360" step="1" value="160" />
+            <input id="c3R" type="range" min="10" max="520" step="1" value="160" />
             <div class="small"><span id="c3RVal">160</span></div>
           </div>
           <div class="field" data-group="c3">
             <label>円3：位置X</label>
-            <input id="c3X" type="range" min="-200" max="200" step="1" value="0" />
+            <input id="c3X" type="range" min="-260" max="260" step="1" value="0" />
             <div class="small"><span id="c3XVal">0</span></div>
           </div>
           <div class="field" data-group="c3">
             <label>円3：位置Y</label>
-            <input id="c3Y" type="range" min="-200" max="200" step="1" value="0" />
+            <input id="c3Y" type="range" min="-260" max="260" step="1" value="0" />
             <div class="small"><span id="c3YVal">0</span></div>
           </div>
 
           <div class="field" data-group="c3">
             <label>円3：線の太さ</label>
-            <input id="c3Stroke" type="range" min="0.5" max="12" step="0.1" value="2" />
+            <input id="c3Stroke" type="range" min="0.5" max="16" step="0.1" value="2" />
             <div class="small"><span id="c3StrokeVal">2</span></div>
           </div>
           <div class="field" data-group="c3">
@@ -174,7 +195,7 @@
 
           <div class="field" data-group="c3">
             <label>外側リング：幅（0で非表示）</label>
-            <input id="c3RingWidth" type="range" min="0" max="60" step="1" value="22" />
+            <input id="c3RingWidth" type="range" min="0" max="120" step="1" value="22" />
             <div class="small"><span id="c3RingWidthVal">22</span></div>
           </div>
           <div class="field" data-group="c3">
@@ -185,46 +206,46 @@
 
           <div class="field" data-group="bgmove">
             <label>背面グロー（十字・円・粒子）</label>
-            <input id="bgGlow" type="range" min="0" max="6" step="0.1" value="1.4" />
+            <input id="bgGlow" type="range" min="0" max="8" step="0.1" value="1.4" />
             <div class="small"><span id="bgGlowVal">1.4</span></div>
           </div>
 
           <div class="field" data-group="bgmove">
             <label>微細粒子：量</label>
-            <input id="sparkCount" type="range" min="0" max="80" step="1" value="12" />
+            <input id="sparkCount" type="range" min="0" max="120" step="1" value="12" />
             <div class="small"><span id="sparkCountVal">12</span></div>
           </div>
 
-          <!-- 1⃣ ガイド（プレビュー専用、SVGコードには出ない） -->
+          <!-- プレビュー専用ガイド -->
           <div class="field" data-group="preview">
             <label>プレビュー：ガイド表示（SVGコードには含めない）</label>
             <input id="showGuide" type="checkbox" checked />
             <div class="small">赤=576枠 / 黄=安全枠 / 青=はみ出し目安</div>
           </div>
 
-          <!-- クリップ（出力SVGに影響） -->
+          <!-- 出力のクリップ -->
           <div class="field" data-group="preview">
             <label>出力のクリップ</label>
             <select id="clipMode">
-              <option value="clip" selected>576枠でクリップ（枠外は見えない）</option>
-              <option value="noclip">クリップしない（枠外要素も保持）</option>
+              <option value="clip" selected>576枠でクリップ</option>
+              <option value="noclip">クリップしない（枠外も保持）</option>
             </select>
           </div>
 
-          <!-- プレビュー表示（Fit / 100%） -->
+          <!-- プレビュー表示 -->
           <div class="field" data-group="preview">
             <label>プレビュー表示</label>
             <div class="row">
               <button type="button" id="btnFit">Fit（全体表示）</button>
               <button type="button" id="btnActual">100%（実寸）</button>
             </div>
-            <div class="small">Fitは見切れ防止。100%は実寸表示。</div>
+            <div class="small">Fitは見切れ防止。100%は実寸＋倍率で拡大縮小。</div>
           </div>
 
-          <!-- 100%表示時の倍率 -->
+          <!-- 4. プレビュー倍率 -->
           <div class="field" data-group="preview">
-            <label>プレビュー倍率（%）</label>
-            <input id="previewScale" type="range" min="25" max="200" step="5" value="100" />
+            <label>プレビュー倍率（%）※100%モード時に反映</label>
+            <input id="previewScale" type="range" min="25" max="300" step="5" value="100" />
             <div class="small"><span id="previewScaleVal">100</span> %</div>
           </div>
 
@@ -238,6 +259,9 @@
         </div>
       </div>
     </section>
+
+    <!-- 5. 左右の境界ドラッグ -->
+    <div class="colResizer" id="colResizer" title="ドラッグで設定カラム幅変更"></div>
 
     <!-- 右：プレビュー＋コード -->
     <section class="previewWrap" id="rightPane">
