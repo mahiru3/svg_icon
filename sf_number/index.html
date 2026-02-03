@@ -212,6 +212,54 @@
   <div class="small"><span id="previewScaleVal">100</span> %</div>
 </div>
 
+  <!-- 左：設定 -->
+  <section class="card">
+    <div class="title">設定</div>
+    <div class="content">
+      <div class="grid zebra" id="settingsGrid">
+
+        <!-- ……既存の設定fieldが並ぶ…… -->
+
+        <!-- プレビュー表示サイズ（←ここに置く） -->
+        <div class="field" data-group="preview">
+          <label>プレビュー表示サイズ（px）</label>
+          <input id="previewSize" type="range" min="200" max="800" step="10" value="576" />
+          <div class="small"><span id="previewSizeVal">576</span> px</div>
+        </div>
+
+        <div class="field" data-group="preview">
+          <label>プレビュー倍率（%）</label>
+          <input id="previewScale" type="range" min="25" max="200" step="5" value="100" />
+          <div class="small"><span id="previewScaleVal">100</span> %</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 右：プレビュー＋コード（ここに field は置かない） -->
+  <section class="previewWrap" id="rightPane">
+    <section class="card" id="previewCard">
+      <div class="title">プレビュー</div>
+      <div class="content">
+        <div class="previewBox">
+          <div id="preview"></div>
+        </div>
+        <div class="small">背景は透過です（市松はプレビュー用）。</div>
+      </div>
+    </section>
+
+    <div class="resizer" id="resizer" title="ドラッグでプレビュー高さ変更"></div>
+
+    <section class="card" id="codeCard">
+      <div class="title">SVGコード</div>
+      <div class="content">
+        <textarea id="code" spellcheck="false" readonly></textarea>
+      </div>
+    </section>
+  </section>
+</main>
+
   </main>
 
  <script src="./svg.js" defer></script>
