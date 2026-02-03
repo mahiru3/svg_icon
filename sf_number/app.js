@@ -31,6 +31,57 @@
     bgGlow: 1.4,
     sparkCount: 12
   };
+// 右カラム：プレビュー高さをドラッグで変更
+(() => {
+  const rightPane = document.getElementById("rightPane");
+  const resizer = document.getElementById("resizer");
+  if (!rightPane || !resizer) return;
+
+  // 初期値（プレビューの高さ）
+  let previewH = null;
+
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+  const setPreviewHeight = (px) => {
+    // 上(プレビュー) / 中(resizer 10px) / 下(残り)
+    rightPane.style.gridTemplateRows = `${px}px 10px 1fr`;
+  };
+
+  const onDown = (e) => {
+    e.preventDefault();
+    const rect = rightPane.getBoundingClientRect();
+
+    // 現在の上段高さを取得（初回のみ）
+    if (previewH === null) {
+      const rows = getComputedStyle(rightPane).gridTemplateRows.split(" ");
+      // "xxxpx 10px yyypx" 形式の1つ目を読む
+      previewH = parseFloat(rows[0]) || 420;
+    }
+
+    const startY = e.clientY;
+    const startH = previewH;
+
+    const onMove = (ev) => {
+      const dy = ev.clientY - startY;
+      const next = startH + dy;
+
+      // 上段は最低220px、最大は右カラム高さ-200px程度
+      const max = rect.height - 200;
+      previewH = clamp(next, 220, max);
+      setPreviewHeight(previewH);
+    };
+
+    const onUp = () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  };
+
+  resizer.addEventListener("mousedown", onDown);
+})();
 
   function render() {
     const svg = window.buildSVG(state);
