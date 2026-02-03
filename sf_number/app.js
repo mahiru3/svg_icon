@@ -13,7 +13,9 @@
     
     crossColor: "#B8F5FF",
     crossWidth: 2.0,
-
+    previewMode: "fit",   // "fit" | "actual"
+    showGuide: true,
+    clipMode: "clip",     // "clip" | "noclip"
     // 背景一括移動
     bgX: 0,
     bgY: 0,
@@ -192,6 +194,26 @@ if (svgEl && box) {
   bind("sparkCount", "sparkCount", Number);
   bind("previewSize", "previewSize", Number);
   bind("previewScale", "previewScale", Number);
+// プレビュー関連
+bind("clipMode", "clipMode", (v) => v);
+
+// checkbox は value ではなく checked を読む
+const showGuideEl = document.getElementById("showGuide");
+if (showGuideEl) {
+  showGuideEl.addEventListener("change", () => {
+    state.showGuide = showGuideEl.checked;
+    render();
+  });
+}
+$("btnFit")?.addEventListener("click", () => {
+  state.previewMode = "fit";
+  render();
+});
+
+$("btnActual")?.addEventListener("click", () => {
+  state.previewMode = "actual";
+  render();
+});
 
 
   // buttons
