@@ -86,6 +86,10 @@ window.addEventListener("DOMContentLoaded", initPreviewResizer);
 
 
   function render() {
+    const setText = (id, v) => {
+    const el = $(id);
+    if (el) el.textContent = v;
+  };
     const svg = window.buildSVG(state);
     $("preview").innerHTML = svg;
     const svgEl = document.querySelector("#preview svg");
@@ -99,32 +103,29 @@ window.addEventListener("DOMContentLoaded", initPreviewResizer);
     svgEl.style.transformOrigin = "center center";
   }
 
-    $("numSizeVal").textContent = state.numSize;
-    $("numGlowVal").textContent = state.numGlow;
-    $("crossWidthVal").textContent = state.crossWidth;
+setText("numSizeVal", state.numSize);
+setText("numGlowVal", state.numGlow);
+    $("crossWidthVal", state.crossWidth;
 
-    $("bgXVal").textContent = state.bgX;
-    $("bgYVal").textContent = state.bgY;
+    setText("bgXVal", state.bgX;
+    $("bgYVal", state.bgY;
 
-    $("c1RVal").textContent = state.c1R;
-    $("c1XVal").textContent = state.c1X;
-    $("c1YVal").textContent = state.c1Y;
+    setText("c1RVal", state.c1R;
+    setText("c1XVal", state.c1X;
+    setText("c1YVal", state.c1Y;
+    setText("c2RVal", state.c2R;
+    setText("c2XVal", state.c2X;
+    setText("c2YVal", state.c2Y;
 
-    $("c2RVal").textContent = state.c2R;
-    $("c2XVal").textContent = state.c2X;
-    $("c2YVal").textContent = state.c2Y;
-
-    $("c3RVal").textContent = state.c3R;
-    $("c3XVal").textContent = state.c3X;
-    $("c3YVal").textContent = state.c3Y;
-
-    $("c3StrokeVal").textContent = state.c3Stroke;
-    $("c3OpacityVal").textContent = state.c3Opacity;
-    $("c3RingWidthVal").textContent = state.c3RingWidth;
-    $("c3RingOpacityVal").textContent = state.c3RingOpacity;
-
-    $("bgGlowVal").textContent = state.bgGlow;
-    $("sparkCountVal").textContent = state.sparkCount;
+    setText("c3RVal", state.c3R;
+    setText("c3XVal", state.c3X;
+    setText("c3YVal", state.c3Y;
+    setText("c3StrokeVal", state.c3Stroke;
+    setText("c3OpacityVal", state.c3Opacity;
+    setText("c3RingWidthVal", state.c3RingWidth;
+    setText("c3RingOpacityVal", state.c3RingOpacity;
+    setText("bgGlowVal", state.bgGlow;
+    setText("sparkCountVal", state.sparkCount;
 
     return svg;
   }
