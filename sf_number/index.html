@@ -216,10 +216,25 @@
   <section class="previewWrap" id="rightPane">
     <section class="card" id="previewCard">
       <div class="title">プレビュー</div>
-      <div class="content">
-        <div class="previewBox">
-          <div id="preview"></div>
-        </div>
+<div class="previewBox" id="previewBox">
+  <div id="preview"></div>
+
+  <!-- プレビュー専用ガイド（出力SVGには含めない） -->
+  <svg id="guideOverlay" viewBox="0 0 576 576" aria-hidden="true">
+    <!-- 576枠 -->
+    <rect x="0" y="0" width="576" height="576"
+          fill="none" stroke="rgba(255,80,80,0.95)" stroke-width="2" />
+    <!-- 安全枠（520） -->
+    <rect x="28" y="28" width="520" height="520"
+          fill="none" stroke="rgba(255,220,120,0.85)" stroke-width="1"
+          stroke-dasharray="6 6" />
+    <!-- はみ出し目安（640） -->
+    <rect x="-32" y="-32" width="640" height="640"
+          fill="none" stroke="rgba(120,180,255,0.75)" stroke-width="1"
+          stroke-dasharray="4 8" />
+  </svg>
+</div>
+
         <div class="small">背景は透過です（市松はプレビュー用）。</div>
       </div>
     </section>
