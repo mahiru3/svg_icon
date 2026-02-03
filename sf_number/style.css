@@ -138,3 +138,38 @@ textarea {
   resize: vertical;
   outline: none;
 }
+/* 設定グリッド：見やすい行色分け */
+.grid.zebra .field{
+  padding: 10px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(148,163,184,.18);
+}
+
+/* 2カラムの“行”を交互に色分け（通常） */
+.grid.zebra .field{
+  background: rgba(255,255,255,.02);
+}
+.grid.zebra .field:nth-child(4n+1),
+.grid.zebra .field:nth-child(4n+2){
+  background: rgba(56,189,248,.06);
+}
+.grid.zebra .field:nth-child(4n+3),
+.grid.zebra .field:nth-child(4n+4){
+  background: rgba(56,189,248,.02);
+}
+
+/* グループ指定がある場合は、行色より優先して統一（同色にまとめる） */
+.grid.zebra .field[data-group]{
+  background: rgba(99,102,241,.08);
+  border-color: rgba(99,102,241,.22);
+}
+
+/* さらに：グループごとに色を少し変える（任意：見分け） */
+.grid.zebra .field[data-group="num"]    { background: rgba(56,189,248,.08); border-color: rgba(56,189,248,.22); }
+.grid.zebra .field[data-group="grad"]   { background: rgba(34,197,94,.08);  border-color: rgba(34,197,94,.22); }
+.grid.zebra .field[data-group="cross"]  { background: rgba(168,85,247,.08); border-color: rgba(168,85,247,.22); }
+.grid.zebra .field[data-group="bgmove"] { background: rgba(251,146,60,.08); border-color: rgba(251,146,60,.22); }
+
+.grid.zebra .field[data-group="c1"]     { background: rgba(59,130,246,.08); border-color: rgba(59,130,246,.22); }
+.grid.zebra .field[data-group="c2"]     { background: rgba(20,184,166,.08); border-color: rgba(20,184,166,.22); }
+.grid.zebra .field[data-group="c3"]     { background: rgba(244,63,94,.08);  border-color: rgba(244,63,94,.22); }
