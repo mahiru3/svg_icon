@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Touch Number SVG Generator</title>
+  <style>
+    :root {
+      --bg: #0b0f16;
+      --panel: #111827;
+      --panel2: #0f172a;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --line: rgba(148,163,184,.25);
+      --btn: #1f2937;
+      --btn2: #111827;
+      --accent: #38bdf8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 20% 10%, #0b1220, var(--bg));
+      color: var(--text);
+    }
+    header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(17,24,39,.8), rgba(17,24,39,.2));
+    }
+    header h1 { margin: 0; font-size: 16px; font-weight: 700; }
+    header p { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+
+    main {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 16px;
+      padding: 16px;
+    }
+    @media (max-width: 980px) {
+      main { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(17,24,39,.9), rgba(15,23,42,.65));
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,.35);
+    }
+    .card .title {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      font-weight: 700;
+      background: rgba(0,0,0,.15);
+    }
+    .card .content { padding: 14px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 12px;
+      align-items: end;
+    }
+    .field { display: grid; gap: 6px; }
+    label { font-size: 12px; color: var(--muted); }
+    input[type="text"], input[type="number"], input[type="color"] {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      outline: none;
+    }
+    input[type="range"] { width: 100%; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .small { font-size: 11px; color: var(--muted); }
+
+    .btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    button {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(31,41,55,.9), rgba(17,24,39,.9));
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+    }
+    button:hover { border-color: rgba(56,189,248,.45); }
+    button.primary {
+      border-color: rgba(56,189,248,.55);
+      box-shadow: 0 0 0 3px rgba(56,189,248,.08) inset;
+    }
+
+    .previewWrap {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .previewBox {
+      border: 1px dashed rgba(148,163,184,.35);
+      border-radius: 12px;
+      padding: 14px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px) 0 0 / 24px 24px,
+        linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px) 0 0 / 24px 24px,
+        rgba(0,0,0,.18);
+      display: grid;
+      place-items: center;
+      min-height: 420px;
+    }
+    .previewBox svg {
+      width: min(576px, 100%);
+      height: auto;
+      display: block;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 260px;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.45;
+      resize: vertical;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Touch Number SVG Generator（576×576 / 背景透過）</h1>
+    <p>①数字、②グラデーション2色、③十字（色/太さ）、④〜⑥円（色/大きさ/位置）を変更 → 即プレビュー。⑦SVGコード表示、⑧DL可能。</p>
+  </header>
+
+  <main>
+    <!-- Controls -->
+    <section class="card">
+      <div class="title">設定</div>
+      <div class="content">
+        <div class="grid">
+          <!-- ① 数字 -->
+          <div class="field">
+            <label>① 数字（0〜99など）</label>
+            <input id="numText" type="text" value="0" maxlength="3" />
+            <div class="small">中央に配置（十字の交点＝中心）</div>
+          </div>
+
+          <!-- ② グラデーション2色 -->
+          <div class="field">
+            <label>② 数字グラデーション（上→下）</label>
+            <div class="row">
+              <div class="field">
+                <label class="small">色1（上）</label>
+                <input id="gradTop" type="color" value="#E9FFFF" />
+              </div>
+              <div class="field">
+                <label class="small">色2（下）</label>
+                <input id="gradBottom" type="color" value="#1BCBFF" />
+              </div>
+            </div>
+          </div>
+
+          <!-- 数字サイズ -->
+          <div class="field">
+            <label>数字サイズ（最大化の強さ）</label>
+            <input id="numSize" type="range" min="420" max="620" step="1" value="560" />
+            <div class="small"><span id="numSizeVal">560</span></div>
+          </div>
+
+          <!-- グロー強さ -->
+          <div class="field">
+            <label>数字グロー（強さ）</label>
+            <input id="numGlow" type="range" min="0" max="8" step="0.1" value="3.0" />
+            <div class="small"><span id="numGlowVal">3.0</span></div>
+          </div>
+
+          <!-- ③ 十字 -->
+          <div class="field">
+            <label>③ 十字：色</label>
+            <input id="crossColor" type="color" value="#B8F5FF" />
+          </div>
+          <div class="field">
+            <label>③ 十字：線の太さ</label>
+            <input id="crossWidth" type="range" min="1" max="6" step="0.1" value="2.0" />
+            <div class="small"><span id="crossWidthVal">2.0</span></div>
+          </div>
+
+          <!-- ④ 円1 -->
+          <div class="field">
+            <label>④ 円1（内側）：色</label>
+            <input id="c1Color" type="color" value="#77ECFF" />
+          </div>
+          <div class="field">
+            <label>④ 円1：大きさ（半径）</label>
+            <input id="c1R" type="range" min="10" max="260" step="1" value="92" />
+            <div class="small"><span id="c1RVal">92</span></div>
+          </div>
+          <div class="field">
+            <label>④ 円1：位置X</label>
+            <input id="c1X" type="range" min="-120" max="120" step="1" value="0" />
+            <div class="small"><span id="c1XVal">0</span></div>
+          </div>
+          <div class="field">
+            <label>④ 円1：位置Y</label>
+            <input id="c1Y" type="range" min="-120" max="120" step="1" value="0" />
+            <div class="small"><span id="c1YVal">0</span></div>
+          </div>
+
+          <!-- ⑤ 円2 -->
+          <div class="field">
+            <label>⑤ 円2：色</label>
+            <input id="c2Color" type="color" value="#77ECFF" />
+          </div>
+          <div class="field">
+            <label>⑤ 円2：大きさ（半径）</label>
+            <input id="c2R" type="range" min="10" max="300" step="1" value="126" />
+            <div class="small"><span id="c2RVal">126</span></div>
+          </div>
+          <div class="field">
+            <label>⑤ 円2：位置X</label>
+            <input id="c2X" type="range" min="-120" max="120" step="1" value="0" />
+            <div class="small"><span id="c2XVal">0</span></div>
+          </div>
+          <div class="field">
+            <label>⑤ 円2：位置Y</label>
+            <input id="c2Y" type="range" min="-120" max="120" step="1" value="0" />
+            <div class="small"><span id="c2YVal">0</span></div>
+          </div>
+
+          <!-- ⑥ 円3 -->
+          <div class="field">
+            <label>⑥ 円3（外側）：色</label>
+            <input id="c3Color" type="color" value="#77ECFF" />
+          </div>
+          <div class="field">
+            <label>⑥ 円3：大きさ（半径）</label>
+            <input id="c3R" type="range" min="10" max="360" step="1" value="160" />
+            <div class="small"><span id="c3RVal">160</span></div>
+          </div>
+          <div class="field">
+            <label>⑥ 円3：位置X</label>
+            <input id="c3X" type="range" min="-120" max="120" step="1" value="0" />
+            <div class="small"><span id="c3XVal">0</span></div>
+          </div>
+          <div class="field">
+            <label>⑥ 円3：位置Y</label>
+            <input id="c3Y" type="range" min="-120" max="120" step="1" value="0" />
+            <div class="small"><span id="c3YVal">0</span></div>
+          </div>
+
+          <!-- 追加：背面グロー -->
+          <div class="field">
+            <label>背面（十字・円）グロー</label>
+            <input id="bgGlow" type="range" min="0" max="6" step="0.1" value="1.4" />
+            <div class="small"><span id="bgGlowVal">1.4</span></div>
+          </div>
+
+          <!-- 追加：粒子量 -->
+          <div class="field">
+            <label>微細粒子：量</label>
+            <input id="sparkCount" type="range" min="0" max="40" step="1" value="12" />
+            <div class="small"><span id="sparkCountVal">12</span></div>
+          </div>
+        </div>
+
+        <div class="btns">
+          <button class="primary" id="btnShow">⑦ SVGコード表示</button>
+          <button id="btnCopy">コードをコピー</button>
+          <button id="btnDl">⑧ SVGをダウンロード</button>
+          <button id="btnReset">初期値に戻す</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preview + Code -->
+    <section class="previewWrap">
+      <section class="card">
+        <div class="title">プレビュー</div>
+        <div class="content">
+          <div class="previewBox">
+            <div id="preview"></div>
+          </div>
+          <div class="small">背景は透過です（この枠の市松はプレビュー用）。</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="title">SVGコード</div>
+        <div class="content">
+          <textarea id="code" spellcheck="false" readonly></textarea>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    const state = {
+      numText: "0",
+      gradTop: "#E9FFFF",
+      gradBottom: "#1BCBFF",
+      numSize: 560,
+      numGlow: 3.0,
+
+      crossColor: "#B8F5FF",
+      crossWidth: 2.0,
+
+      c1Color: "#77ECFF", c1R: 92,  c1X: 0, c1Y: 0,
+      c2Color: "#77ECFF", c2R: 126, c2X: 0, c2Y: 0,
+      c3Color: "#77ECFF", c3R: 160, c3X: 0, c3Y: 0,
+
+      bgGlow: 1.4,
+      sparkCount: 12
+    };
+
+    function clampText(t) {
+      // 数字以外が混じっても許容はするが、空は0に
+      t = (t ?? "").toString().trim();
+      return t.length ? t : "0";
+    }
+
+    // 乱数粒子（再描画で揺れないよう固定シードっぽく）
+    function mulberry32(seed) {
+      return function() {
+        let t = seed += 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      }
+    }
+
+    function esc(s) {
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
+    }
+
+    function buildSVG() {
+      const W = 576, H = 576;
+      const cx = 288, cy = 288;
+
+      const numText = esc(clampText(state.numText));
+      const numSize = Number(state.numSize);
+      const numGlow = Number(state.numGlow);
+
+      const crossColor = state.crossColor;
+      const crossWidth = Number(state.crossWidth);
+
+      const c1 = { color: state.c1Color, r: Number(state.c1R), x: Number(state.c1X), y: Number(state.c1Y) };
+      const c2 = { color: state.c2Color, r: Number(state.c2R), x: Number(state.c2X), y: Number(state.c2Y) };
+      const c3 = { color: state.c3Color, r: Number(state.c3R), x: Number(state.c3X), y: Number(state.c3Y) };
+
+      const bgGlow = Number(state.bgGlow);
+      const sparkCount = Number(state.sparkCount);
+
+      const rng = mulberry32(20260203); // 固定
+      const sparks = [];
+      for (let i = 0; i < sparkCount; i++) {
+        // 中心付近〜少し外側に散らす
+        const a = rng() * Math.PI * 2;
+        const rad = 40 + rng() * 170;
+        const x = cx + Math.cos(a) * rad;
+        const y = cy + Math.sin(a) * rad;
+        const r = 0.7 + rng() * 0.9;
+        const op = 0.25 + rng() * 0.35;
+        sparks.push({ x, y, r, op });
+      }
+
+      // 「端まで最大化」は font-size を大きめにして clip で保証
+      // y=cy, dominant-baseline=central で十字交点＝文字中心
+      return `
+<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" overflow="hidden">
+  <defs>
+    <filter id="thinGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="${bgGlow}" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="numGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="${numGlow}" result="b"/>
+      <feColorMatrix in="b" type="matrix"
+        values="1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                0 0 0 0.85 0" result="bg"/>
+      <feMerge>
+        <feMergeNode in="bg"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <linearGradient id="numGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${state.gradTop}"/>
+      <stop offset="1" stop-color="${state.gradBottom}"/>
+    </linearGradient>
+
+    <clipPath id="clipAll">
+      <rect x="0" y="0" width="${W}" height="${H}"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#clipAll)">
+    <!-- 背景は描かない（透過） -->
+
+    <!-- ③ 十字 -->
+    <g filter="url(#thinGlow)" stroke="${crossColor}" stroke-opacity="0.42" stroke-linecap="round">
+      <line x1="${cx}" y1="56" x2="${cx}" y2="520" stroke-width="${crossWidth}"/>
+      <line x1="56" y1="${cy}" x2="520" y2="${cy}" stroke-width="${crossWidth}"/>
+    </g>
+
+    <!-- ④〜⑥ 円（各々 色/半径/位置） -->
+    <g filter="url(#thinGlow)" fill="none" stroke-opacity="0.16" stroke-width="2">
+      <circle cx="${cx + c1.x}" cy="${cy + c1.y}" r="${c1.r}" stroke="${c1.color}"/>
+      <circle cx="${cx + c2.x}" cy="${cy + c2.y}" r="${c2.r}" stroke="${c2.color}" stroke-opacity="0.14"/>
+      <circle cx="${cx + c3.x}" cy="${cy + c3.y}" r="${c3.r}" stroke="${c3.color}" stroke-opacity="0.12"/>
+    </g>
+
+    <!-- 微細粒子 -->
+    <g filter="url(#thinGlow)" fill="${state.gradTop}" fill-opacity="0.35">
+      ${sparks.map(s => `<circle cx="${s.x.toFixed(1)}" cy="${s.y.toFixed(1)}" r="${s.r.toFixed(2)}" opacity="${s.op.toFixed(2)}"/>`).join("\n      ")}
+    </g>
+
+    <!-- 数字（最大化＋中心一致） -->
+    <g filter="url(#numGlow)">
+      <text x="${cx}" y="${cy}"
+            text-anchor="middle"
+            dominant-baseline="central"
+            font-size="${numSize}"
+            font-family="system-ui, -apple-system, Segoe UI, Arial, sans-serif"
+            font-weight="800"
+            fill="none"
+            stroke="${state.gradTop}"
+            stroke-opacity="0.55"
+            stroke-width="10"
+            paint-order="stroke">${numText}</text>
+
+      <text x="${cx}" y="${cy}"
+            text-anchor="middle"
+            dominant-baseline="central"
+            font-size="${numSize}"
+            font-family="system-ui, -apple-system, Segoe UI, Arial, sans-serif"
+            font-weight="800"
+            fill="url(#numGrad)">${numText}</text>
+
+      <text x="${cx}" y="${cy}"
+            text-anchor="middle"
+            dominant-baseline="central"
+            font-size="${numSize}"
+            font-family="system-ui, -apple-system, Segoe UI, Arial, sans-serif"
+            font-weight="800"
+            fill="none"
+            stroke="${state.gradBottom}"
+            stroke-opacity="0.20"
+            stroke-width="3">${numText}</text>
+    </g>
+  </g>
+</svg>`.trim();
+    }
+
+    function render() {
+      const svg = buildSVG();
+      $("preview").innerHTML = svg;
+      // コード欄は「表示ボタン」押下で出す要件なので、通常は更新だけしておく
+      $("numSizeVal").textContent = state.numSize;
+      $("numGlowVal").textContent = state.numGlow;
+      $("crossWidthVal").textContent = state.crossWidth;
+      $("c1RVal").textContent = state.c1R;
+      $("c1XVal").textContent = state.c1X;
+      $("c1YVal").textContent = state.c1Y;
+      $("c2RVal").textContent = state.c2R;
+      $("c2XVal").textContent = state.c2X;
+      $("c2YVal").textContent = state.c2Y;
+      $("c3RVal").textContent = state.c3R;
+      $("c3XVal").textContent = state.c3X;
+      $("c3YVal").textContent = state.c3Y;
+      $("bgGlowVal").textContent = state.bgGlow;
+      $("sparkCountVal").textContent = state.sparkCount;
+      return svg;
+    }
+
+    function bind(id, key, parser = (v) => v) {
+      const el = $(id);
+      const handler = () => { state[key] = parser(el.value); render(); };
+      el.addEventListener("input", handler);
+      el.addEventListener("change", handler);
+    }
+
+    function reset() {
+      Object.assign(state, {
+        numText: "0",
+        gradTop: "#E9FFFF",
+        gradBottom: "#1BCBFF",
+        numSize: 560,
+        numGlow: 3.0,
+        crossColor: "#B8F5FF",
+        crossWidth: 2.0,
+        c1Color: "#77ECFF", c1R: 92,  c1X: 0, c1Y: 0,
+        c2Color: "#77ECFF", c2R: 126, c2X: 0, c2Y: 0,
+        c3Color: "#77ECFF", c3R: 160, c3X: 0, c3Y: 0,
+        bgGlow: 1.4,
+        sparkCount: 12
+      });
+
+      $("numText").value = state.numText;
+      $("gradTop").value = state.gradTop;
+      $("gradBottom").value = state.gradBottom;
+      $("numSize").value = state.numSize;
+      $("numGlow").value = state.numGlow;
+
+      $("crossColor").value = state.crossColor;
+      $("crossWidth").value = state.crossWidth;
+
+      $("c1Color").value = state.c1Color; $("c1R").value = state.c1R; $("c1X").value = state.c1X; $("c1Y").value = state.c1Y;
+      $("c2Color").value = state.c2Color; $("c2R").value = state.c2R; $("c2X").value = state.c2X; $("c2Y").value = state.c2Y;
+      $("c3Color").value = state.c3Color; $("c3R").value = state.c3R; $("c3X").value = state.c3X; $("c3Y").value = state.c3Y;
+
+      $("bgGlow").value = state.bgGlow;
+      $("sparkCount").value = state.sparkCount;
+
+      render();
+      $("code").value = "";
+    }
+
+    // bindings
+    bind("numText", "numText", (v) => v);
+    bind("gradTop", "gradTop");
+    bind("gradBottom", "gradBottom");
+    bind("numSize", "numSize", (v) => Number(v));
+    bind("numGlow", "numGlow", (v) => Number(v));
+
+    bind("crossColor", "crossColor");
+    bind("crossWidth", "crossWidth", (v) => Number(v));
+
+    bind("c1Color", "c1Color"); bind("c1R", "c1R", Number); bind("c1X", "c1X", Number); bind("c1Y", "c1Y", Number);
+    bind("c2Color", "c2Color"); bind("c2R", "c2R", Number); bind("c2X", "c2X", Number); bind("c2Y", "c2Y", Number);
+    bind("c3Color", "c3Color"); bind("c3R", "c3R", Number); bind("c3X", "c3X", Number); bind("c3Y", "c3Y", Number);
+
+    bind("bgGlow", "bgGlow", Number);
+    bind("sparkCount", "sparkCount", Number);
+
+    // buttons
+    $("btnShow").addEventListener("click", () => {
+      $("code").value = buildSVG();
+      $("code").focus();
+      $("code").select();
+    });
+
+    $("btnCopy").addEventListener("click", async () => {
+      const txt = buildSVG();
+      try {
+        await navigator.clipboard.writeText(txt);
+        $("code").value = txt;
+      } catch {
+        $("code").value = txt;
+        $("code").focus();
+        $("code").select();
+        document.execCommand("copy");
+      }
+    });
+
+    $("btnDl").addEventListener("click", () => {
+      const svg = buildSVG();
+      const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const safeNum = clampText(state.numText).replace(/[^0-9a-zA-Z_-]/g, "_");
+      a.href = url;
+      a.download = `touch-num-${safeNum}.svg`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    $("btnReset").addEventListener("click", reset);
+
+    // init
+    render();
+  </script>
+</body>
+</html>
