@@ -133,6 +133,16 @@ button.primary {
   gap: 12px;
   height: calc(100vh - 32px); /* stickyで画面内に収める */
 }
+#rightPane{
+  position: sticky;
+  top: 16px;
+  align-self: start;
+
+  display: grid;
+  grid-template-rows: minmax(220px, 55vh) 10px minmax(160px, 1fr);
+  gap: 12px;
+  height: calc(100vh - 32px);
+}
 
 /* resizer（ドラッグバー） */
 .resizer{
