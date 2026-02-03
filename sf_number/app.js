@@ -97,9 +97,32 @@ window.addEventListener("DOMContentLoaded", initPreviewResizer);
     const size  = state.previewSize;
     const scale = state.previewScale / 100;
 
-    svgEl.style.width  = `${size}px`;
-    svgEl.style.height = `${size}px`;
-    svgEl.style.transform = `scale(${scale})`;
+const box = document.querySelector(".previewBox");
+if (svgEl && box) {
+  // 表示の基準は「576×576」の絵
+  const base = 576;
+
+  // 100%（実寸）は 576px を基準
+  if (state.previewMode === "actual") {
+    svgEl.style.width = `${base}px`;
+    svgEl.style.height = `${base}px`;
+    svgEl.style.transform = `scale(${state.previewScale / 100})`;
+    svgEl.style.transformOrigin = "center center";
+    return;
+  }
+
+  // Fit（全体表示）：プレビュー枠に収まる倍率を自動計算
+  const pad = 28; // previewBox padding(14*2)相当
+  const availW = Math.max(50, box.clientWidth - pad);
+  const availH = Math.max(50, box.clientHeight - pad);
+
+  const fit = Math.min(availW / base, availH / base);
+  svgEl.style.width = `${base}px`;
+  svgEl.style.height = `${base}px`;
+  svgEl.style.transform = `scale(${fit})`;
+  svgEl.style.transformOrigin = "center center";
+}
+
     svgEl.style.transformOrigin = "center center";
   }
 
