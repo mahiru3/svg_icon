@@ -29,20 +29,23 @@
     const cx = 288, cy = 288;
 
     const numText = esc(clampText(state.numText));
-
-    // クリップ（出力に影響）
     const useClip = (state.clipMode ?? "clip") !== "noclip";
 
-    // 背景素材（十字＋円＋粒子）一括：移動＆拡縮
+    // 背景素材 一括（移動＆拡縮）
     const bgX = Number(state.bgX ?? 0);
     const bgY = Number(state.bgY ?? 0);
     const bgScale = Number(state.bgScale ?? 1);
 
-    // 文字 X/Y スケール
+    // 文字（位置＋スケール）
+    const numX = Number(state.numX ?? 0);
+    const numY = Number(state.numY ?? 0);
+    const tx = cx + numX;
+    const ty = cy + numY;
+
     const nSX = Number(state.numScaleX ?? 1);
     const nSY = Number(state.numScaleY ?? 1);
 
-    // 粒子（背景素材として扱うので、後で同一グループ内に入れる）
+    // 粒子
     const rng = mulberry32(20260203);
     const sparks = [];
     const sparkCount = Number(state.sparkCount ?? 0);
@@ -102,7 +105,7 @@
   <!-- 背景は描かない（透過） -->
   <g ${useClip ? `clip-path="url(#clipAll)"` : ``}>
 
-    <!-- 背景素材（十字＋円＋粒子）を一括で移動＆拡縮（中心基準） -->
+    <!-- 背景素材（十字＋円＋粒子）を中心基準で一括移動＆拡縮 -->
     <g transform="
       translate(${bgX}, ${bgY})
       translate(${cx}, ${cy})
@@ -118,8 +121,10 @@
 
       <!-- 円 -->
       <g filter="url(#thinGlow)" fill="none">
-        <circle cx="${cx + c1.x}" cy="${cy + c1.y}" r="${c1.r}" stroke="${c1.color}" stroke-opacity="0.16" stroke-width="2"/>
-        <circle cx="${cx + c2.x}" cy="${cy + c2.y}" r="${c2.r}" stroke="${c2.color}" stroke-opacity="0.14" stroke-width="2"/>
+        <circle cx="${cx + c1.x}" cy="${cy + c1.y}" r="${c1.r}"
+                stroke="${c1.color}" stroke-opacity="0.16" stroke-width="2"/>
+        <circle cx="${cx + c2.x}" cy="${cy + c2.y}" r="${c2.r}"
+                stroke="${c2.color}" stroke-opacity="0.14" stroke-width="2"/>
 
         <circle cx="${cx + c3.x}" cy="${cy + c3.y}" r="${c3.r}"
                 stroke="${c3.color}" stroke-opacity="${Number(state.c3Opacity ?? 0)}"
@@ -131,42 +136,42 @@
                 stroke-width="${Number(state.c3RingWidth ?? 0)}" fill="none"/>`.trim() : ``}
       </g>
 
-      <!-- 微細粒子（背景素材に含める） -->
+      <!-- 粒子（背景素材に含める） -->
       <g filter="url(#thinGlow)" fill="${state.gradTop}" fill-opacity="0.35">
         ${sparks.map(s =>
           `<circle cx="${s.x.toFixed(1)}" cy="${s.y.toFixed(1)}" r="${s.r.toFixed(2)}" opacity="${s.op.toFixed(2)}"/>`
         ).join("\n        ")}
       </g>
-
     </g>
 
-    <!-- 数字（中心基準でX/Y別スケール） -->
+    <!-- 数字：位置(tx,ty)を中心に、X/Y別スケール -->
     <g filter="url(#numGlow)" transform="
-      translate(${cx}, ${cy})
+      translate(${tx}, ${ty})
       scale(${nSX}, ${nSY})
-      translate(${-cx}, ${-cy})
+      translate(${-tx}, ${-ty})
     ">
-      <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central"
+      <text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="central"
             font-size="${Number(state.numSize ?? 0)}"
             font-family="system-ui, -apple-system, Segoe UI, Arial, sans-serif"
             font-weight="800"
-            fill="none" stroke="${state.gradTop}" stroke-opacity="0.55"
+            fill="none"
+            stroke="${state.gradTop}" stroke-opacity="0.55"
             stroke-width="10" paint-order="stroke">${numText}</text>
 
-      <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central"
+      <text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="central"
             font-size="${Number(state.numSize ?? 0)}"
             font-family="system-ui, -apple-system, Segoe UI, Arial, sans-serif"
             font-weight="800"
             fill="url(#numGrad)">${numText}</text>
 
-      <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central"
+      <text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="central"
             font-size="${Number(state.numSize ?? 0)}"
             font-family="system-ui, -apple-system, Segoe UI, Arial, sans-serif"
             font-weight="800"
-            fill="none" stroke="${state.gradBottom}" stroke-opacity="0.20"
+            fill="none"
+            stroke="${state.gradBottom}" stroke-opacity="0.20"
             stroke-width="3">${numText}</text>
     </g>
-
   </g>
 </svg>`.trim();
   };
