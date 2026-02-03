@@ -3,6 +3,9 @@
   --text:#e5e7eb;
   --muted:#94a3b8;
   --line:rgba(148,163,184,.25);
+
+  /* 5. 左カラム幅（app.jsで動的に変更） */
+  --leftW: 420px;
 }
 
 *{ box-sizing:border-box; }
@@ -24,7 +27,7 @@ header p{ margin:6px 0 0; font-size:12px; color:var(--muted); }
 
 main{
   display:grid;
-  grid-template-columns:420px minmax(620px,1fr);
+  grid-template-columns: var(--leftW) 10px minmax(620px,1fr); /* 左 / 縦リサイズ / 右 */
   gap:16px;
   padding:16px;
   align-items:start;
@@ -54,8 +57,8 @@ main{
   gap:10px 12px;
   align-items:end;
 }
-
 .field{ display:grid; gap:6px; }
+
 label{ font-size:12px; color:var(--muted); }
 
 input[type="text"],
@@ -95,6 +98,20 @@ button.primary{
   box-shadow:0 0 0 3px rgba(56,189,248,.08) inset;
 }
 
+/* 5. 左右の境界ドラッグバー */
+.colResizer{
+  width:10px;
+  height:calc(100vh - 32px);
+  position:sticky;
+  top:16px;
+  align-self:start;
+  cursor:col-resize;
+  border-radius:10px;
+  background:linear-gradient(180deg, rgba(56,189,248,.18), rgba(56,189,248,.03));
+  border:1px solid rgba(56,189,248,.25);
+  box-shadow:0 0 0 3px rgba(56,189,248,.05) inset;
+}
+
 /* ---- right pane (preview + resizer + code) ---- */
 #rightPane{
   position:sticky;
@@ -107,15 +124,13 @@ button.primary{
   height:calc(100vh - 32px);
 }
 
-/* 右カラムのカードが縮められるように */
 #rightPane .card,
 #rightPane .card .content{ min-height:0; }
 
-/* 各カード内でスクロール */
 #previewCard .content{ overflow:auto; }
 #codeCard .content{ overflow:auto; }
 
-/* プレビュー枠（市松） */
+/* プレビュー枠 */
 .previewBox{
   position:relative;
   border:1px dashed rgba(148,163,184,.35);
@@ -129,7 +144,7 @@ button.primary{
   display:flex;
   align-items:center;
   justify-content:center;
-  overflow:hidden; /* Fit表示を前提：スクロールさせない */
+  overflow:hidden;
 }
 
 #preview{
@@ -137,10 +152,10 @@ button.primary{
   z-index:1;
 }
 
-/* プレビュー専用ガイド（出力SVGには含めない） */
+/* ガイド（出力SVGには含めない） */
 #guideOverlay{
   position:absolute;
-  inset:14px;            /* .previewBox の padding と一致 */
+  inset:14px;
   pointer-events:none;
   z-index:2;
 
@@ -149,7 +164,7 @@ button.primary{
   overflow:visible;
 }
 
-/* resizer（ドラッグバー） */
+/* resizer（縦） */
 .resizer{
   height:10px;
   border-radius:10px;
@@ -159,7 +174,6 @@ button.primary{
   box-shadow:0 0 0 3px rgba(56,189,248,.06) inset;
 }
 
-/* textarea */
 textarea{
   width:100%;
   min-height:260px;
@@ -183,7 +197,6 @@ textarea{
   background:rgba(255,255,255,.02);
 }
 
-/* 2カラムの“行”を交互に（通常） */
 .grid.zebra .field:nth-child(4n+1),
 .grid.zebra .field:nth-child(4n+2){
   background:rgba(56,189,248,.06);
@@ -193,13 +206,12 @@ textarea{
   background:rgba(56,189,248,.02);
 }
 
-/* data-group は行色より優先 */
 .grid.zebra .field[data-group]{
   background:rgba(99,102,241,.08);
   border-color:rgba(99,102,241,.22);
 }
 
-/* グループ別（見分け） */
+.grid.zebra .field[data-group="layout"] { background:rgba(148,163,184,.08); border-color:rgba(148,163,184,.22); }
 .grid.zebra .field[data-group="num"]    { background:rgba(56,189,248,.08); border-color:rgba(56,189,248,.22); }
 .grid.zebra .field[data-group="cross"]  { background:rgba(168,85,247,.08); border-color:rgba(168,85,247,.22); }
 .grid.zebra .field[data-group="bgmove"] { background:rgba(251,146,60,.08); border-color:rgba(251,146,60,.22); }
