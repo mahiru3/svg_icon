@@ -174,6 +174,19 @@
           <input id="sparkCount" type="range" min="0" max="40" step="1" value="12" />
           <div class="small"><span id="sparkCountVal">12</span></div>
         </div>
+<div class="field" data-group="preview">
+  <label>ガイド表示（プレビュー）</label>
+  <input id="showGuide" type="checkbox" checked />
+  <div class="small">576枠・安全枠を重ねて表示します。</div>
+</div>
+
+<div class="field" data-group="preview">
+  <label>出力のクリップ</label>
+  <select id="clipMode">
+    <option value="clip">576枠でクリップ（枠外は見えない）</option>
+    <option value="noclip">クリップしない（枠外要素も保持）</option>
+  </select>
+</div>
 
         <!-- プレビュー表示サイズ（設定側に置く：重複禁止） -->
         <div class="field" data-group="preview">
